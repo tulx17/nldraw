@@ -22,3 +22,30 @@ platforms:
     # incrementVersionCode: $INCREMENTAL_VERSION_CODE
     # versionNameSuffix: $VERSION_NAME_SUFFIX
     packageName: $PACKAGE_NAME
+    manifest:
+      - file: AndroidManifest.xml
+        target: manifest
+        attrs:
+          xmlns:tools: http://schemas.android.com/tools
+
+      - file: AndroidManifest.xml
+        target: manifest/application
+        attrs:
+          android:largeHeap: true
+          android:hardwareAccelerated: true
+
+      - file: AndroidManifest.xml
+        target: manifest
+        merge: |
+          <manifest>
+            <!-- <uses-permission android:name="android.permission.CAMERA" /> -->
+            <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+            <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="29" />
+          </manifest>
+
+      - file: AndroidManifest.xml
+        target: manifest
+        merge: |
+          <manifest>
+            <uses-sdk tools:overrideLibrary="com.google.zxing.client.android" />
+          </manifest>
