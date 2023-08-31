@@ -1,0 +1,24 @@
+vars:
+  PACKAGE_NAME:
+    default: app.tulx.tldraw
+  APP_NAME:
+    default: Tldraw
+  VERSION_NAME:
+    default: "0.0.1"
+    type: string
+  VERSION_NAME_SUFFIX:
+    default:
+  VERSION_CODE:
+    default: 1
+    type: number
+  INCREMENTAL_VERSION_CODE:
+    default: true
+
+platforms:
+  android:
+    appName: $APP_NAME
+    versionName: $VERSION_NAME
+    versionCode: $VERSION_CODE
+    # incrementVersionCode: $INCREMENTAL_VERSION_CODE
+    # versionNameSuffix: $VERSION_NAME_SUFFIX
+    packageName: $PACKAGE_NAME
