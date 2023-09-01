@@ -1,3 +1,4 @@
+import { EMPTY_STRING } from "@/constants/primitive";
 import { createDir } from "@/utilities/filesystem";
 import { logger } from "@/utilities/logger";
 import { hideStatusBar } from "@/utilities/statusBar";
@@ -9,7 +10,7 @@ export async function init() {
   // #endregion
 
   // #region init WORK_DIR
-  await createDir({ path: "" });
+  await createDir({ path: EMPTY_STRING });
   logger.log("working directory SHOULD be created");
   // #endregion
 }
