@@ -3,13 +3,17 @@ import { status } from "@/utilities/capacitor";
 export async function showStatusBar() {
   const { visible } = await getStatusBarInfo();
 
-  if (!visible) status.show();
+  if (visible) return;
+
+  await status.show();
 }
 
 export async function hideStatusBar() {
   const { visible } = await getStatusBarInfo();
 
-  if (visible) status.hide();
+  if (!visible) return;
+
+  status.hide();
 }
 
 export async function toggleStatusBar() {
