@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@aparajita/capacitor-biometric-auth": "^5.0.2",
+    "@aparajita/capacitor-logger": "^4.0.1",
     "@capacitor-community/barcode-scanner": "^4.0.1",
     "@capacitor-community/keep-awake": "^4.0.0",
     "@capacitor-community/privacy-screen": "^4.1.1",
