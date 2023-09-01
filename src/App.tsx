@@ -3,9 +3,7 @@ import { useInit } from "@/hooks";
 
 export default function App() {
   useInit({
-    async init() {
-      await init();
-    },
+    init,
   });
 
   return <>App</>;
