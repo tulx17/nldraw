@@ -15,6 +15,7 @@ dependencies {
     implementation project(':capacitor-community-keep-awake')
     implementation project(':capacitor-community-privacy-screen')
     implementation project(':capacitor-community-speech-recognition')
+    implementation project(':capacitor-app')
     implementation project(':capacitor-device')
     implementation project(':capacitor-filesystem')
     implementation project(':capacitor-haptics')

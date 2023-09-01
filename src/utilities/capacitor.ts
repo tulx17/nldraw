@@ -9,6 +9,11 @@ import { Filesystem } from "@capacitor/filesystem";
 import { StatusBar } from "@capacitor/status-bar";
 // import { Toast } from "@capacitor/toast";
 // import { DocumentScanner } from "capacitor-document-scanner";
+import { App } from "@capacitor/app";
+
+export const app = {
+  addListener: App.addListener,
+};
 
 export const device = {
   // ...Device

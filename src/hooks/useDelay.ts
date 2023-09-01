@@ -6,7 +6,7 @@ type UseDelayParams<T> = {
   target?: Array<T>;
 };
 
-export default function useDelay<T>(params?: UseDelayParams<T>) {
+export function useDelay<T>(params?: UseDelayParams<T>) {
   const { delay = 500, callback = () => {}, target = [] } = { ...params };
 
   const savedCallback = useRef(callback);

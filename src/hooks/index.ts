@@ -1,2 +1,3 @@
-export { default as useDelay } from "@/hooks/useDelay";
-export { default as useInit } from "@/hooks/useInit";
+export * from "@/hooks/useDelay";
+export * from "@/hooks/useInit";
+export * from "@/hooks/useNativeAppEvent";

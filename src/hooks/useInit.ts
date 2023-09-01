@@ -1,13 +1,22 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 type UseInitParams = {
   init: () => void;
   cleanup?: () => void;
 };
 
-export default function useInit({ init, cleanup = () => {} }: UseInitParams) {
+export function useInit({ init, cleanup = () => {} }: UseInitParams) {
+  const [mounted, setMounted] = useState(false);
+
   useEffect(() => {
     init();
-    return cleanup;
+    setMounted(true);
+
+    return () => {
+      cleanup();
+      setMounted(false);
+    };
   }, []);
+
+  return mounted;
 }
