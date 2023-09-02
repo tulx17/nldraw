@@ -1,6 +1,4 @@
-import { Stack } from "@/components";
-import { useNativeAppEvent } from "@/hooks";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
+import { useMediaQuery, useNativeAppEvent } from "@/hooks";
 import { disableDarkMode, enableDarkMode } from "@/utilities/darkMode";
 import { Fragment, useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
@@ -31,14 +29,14 @@ export function Root() {
 
   return (
     <Fragment>
-      <Stack
+      {/* <Stack
         style={{
           width: "100%",
         }}
         direction={"vertical"}
-      >
-        <Outlet />
-      </Stack>
+      > */}
+      <Outlet />
+      {/* </Stack> */}
     </Fragment>
   );
 }

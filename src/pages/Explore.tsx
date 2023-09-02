@@ -128,6 +128,7 @@ export function Explore() {
 
             switch (isDirectory) {
               case true:
+                const isContainer = /\.tldr/.test(name);
                 return (
                   <Swipe
                     key={uri}
@@ -148,13 +149,26 @@ export function Explore() {
                   >
                     <ListItem
                       description={[size, "B"].join(EMPTY_STRING)}
-                      arrow={true}
+                      arrow={!isContainer}
                       prefix={<FolderOutline />}
                       onClick={() => {
-                        setQuery((prev) => ({
-                          ...prev,
-                          directory: joinPath(decodedDirectory, name),
-                        }));
+                        if (!isContainer) {
+                          setQuery((prev) => ({
+                            ...prev,
+                            directory: joinPath(decodedDirectory, name),
+                          }));
+                          return;
+                        }
+
+                        navigate(
+                          joinPath(
+                            "..",
+                            "draw",
+                            encodeURIComponent(
+                              joinPath(decodedDirectory, name, "snapshot.tldr")
+                            )
+                          )
+                        );
                       }}
                     >
                       {name}
@@ -238,6 +252,7 @@ async function handleRemoveDirectory(
 ) {
   const result = await removeDir({
     path: joinPath(decodedDirectory, name),
+    forced: true,
   });
 
   if (!result) {
@@ -256,10 +271,13 @@ async function handleCreateDirectory(
   refreshDirectory: () => void
 ) {
   const folderName = [
-    "tmp",
-    (directoryContent.filter((entry) => entry.type === "directory").length + 1)
+    (
+      directoryContent.filter(
+        (entry) => entry.type === "directory" && !/\.tldr$/.test(entry.name)
+      ).length + 1
+    )
       .toString()
-      .padStart(2, "0"),
+      .padStart(3, "0"),
   ].join(".");
 
   const result = await createDir({
@@ -287,23 +305,35 @@ async function handleCreateFile(
   directoryContent: FileInfo[],
   refreshDirectory: () => void
 ) {
+  const encodedDirectory = getDecodedURIComponent({
+    from: query,
+    name: "directory",
+  });
+
   const fileName = [
-    "tmp",
-    (directoryContent.filter((entry) => entry.type === "file").length + 1)
+    "draw",
+    (
+      directoryContent.filter(
+        (entry) => entry.type === "directory" && /\.tldr$/.test(entry.name)
+      ).length + 1
+    )
       .toString()
-      .padStart(2, "0"),
-    "txt",
+      .padStart(6, "0"),
+    "tldr",
   ].join(".");
 
-  const result = await writeFile({
-    path: joinPath(
-      getDecodedURIComponent({ from: query, name: "directory" }),
-      fileName
-    ),
+  const path = joinPath(encodedDirectory, fileName);
+
+  const container = await createDir({ path });
+
+  if (!container) return;
+
+  const file = await writeFile({
+    path: joinPath(path, "snapshot.tldr"),
     data: fileName,
   });
 
-  if (!result) {
+  if (!file) {
     Toast.show("Failed");
     return;
   }
