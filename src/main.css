@@ -5,24 +5,36 @@
 }
 
 :root {
+  --color: rgba(255, 255, 255, 0.87);
+  --bg: #242424
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color: var(--color);
+  background-color: var(--bg);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-text-size-adjust: 100%;
 }
 
-@media (prefers-color-scheme: light) {
+/* @media (prefers-color-scheme: light) {
   :root {
-    color: #213547;
-    background-color: #ffffff;
+    --color: #213547;
+    --bg: #ffffff;
   }
+} */
+
+[data-prefers-color-scheme="dark"] {
+  --color: rgba(255, 255, 255, 0.87);
+  --bg: #242424
+}
+
+[data-prefers-color-scheme="light"] {
+    --color: #213547;
+    --bg: #ffffff;
 }
 
 html, body, #root, .tldraw__editor {

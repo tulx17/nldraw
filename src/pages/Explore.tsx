@@ -14,7 +14,6 @@ import {
   AddSquareOutline,
   FileOutline,
   FolderOutline,
-  RedoOutline,
   SetOutline,
 } from "antd-mobile-icons";
 import { Fragment, useEffect, useState } from "react";
@@ -74,9 +73,6 @@ export function Explore() {
           {getDecodedURIComponent({ from: query, name: "directory" })}
         </Stack>
         <Stack justify={"end"}>
-          <Button onClick={refreshDirectory}>
-            <RedoOutline />
-          </Button>
           <Button
             onClick={async () =>
               await handleCreateFile(query, directoryContent, refreshDirectory)
@@ -147,7 +143,7 @@ export function Explore() {
                     <ListItem
                       description={[size, "B"].join(EMPTY_STRING)}
                       arrow={!isContainer}
-                      prefix={<FolderOutline />}
+                      prefix={isContainer ? <></> : <FolderOutline />}
                       onClick={() => {
                         if (!isContainer) {
                           setQuery((prev) => ({

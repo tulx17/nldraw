@@ -1,15 +1,15 @@
-export function enableDarkMode() {
+export function enableDarkScheme() {
   document.documentElement.setAttribute("data-prefers-color-scheme", "dark");
 }
 
-export function disableDarkMode() {
+export function disableDarkScheme() {
   document.documentElement.setAttribute("data-prefers-color-scheme", "light");
 }
 
-export function toggleDarkMode(isDark?: boolean) {
+export function toggleDarkScheme(isDark?: boolean) {
   switch (isDark) {
     case true:
-      disableDarkMode();
+      disableDarkScheme();
       break;
 
     // case false:
@@ -17,7 +17,7 @@ export function toggleDarkMode(isDark?: boolean) {
     //   break;
 
     default:
-      enableDarkMode();
+      enableDarkScheme();
       break;
   }
 }

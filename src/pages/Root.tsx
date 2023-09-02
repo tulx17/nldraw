@@ -1,5 +1,5 @@
 import { useMediaQuery, useNativeAppEvent } from "@/hooks";
-import { disableDarkMode, enableDarkMode } from "@/utilities/darkMode";
+import { disableDarkScheme, enableDarkScheme } from "@/utilities/darkScheme";
 import { Fragment, useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
@@ -18,11 +18,11 @@ export function Root() {
   useEffect(() => {
     switch (matchesDark) {
       case false:
-        disableDarkMode();
+        disableDarkScheme();
         break;
 
       default:
-        enableDarkMode();
+        enableDarkScheme();
         break;
     }
   }, [matchesDark]);
