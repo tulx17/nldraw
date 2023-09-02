@@ -1,7 +1,7 @@
 import { Canvas } from "@/components";
 import { EMPTY_STRING } from "@/constants/primitive";
-import { readFile, writeFile } from "@/utilities/filesystem";
-import { TLStore, createTLStore, defaultShapes } from "@tldraw/tldraw";
+import { loadSnapshot, saveSnapshot } from "@/pages/Draw.module";
+import { createTLStore, defaultShapes } from "@tldraw/tldraw";
 import { Toast } from "antd-mobile";
 import { DownlandOutline, UploadOutline } from "antd-mobile-icons";
 import { Fragment, useEffect, useState } from "react";
@@ -11,10 +11,8 @@ export function Draw() {
   const { name = EMPTY_STRING } = useParams();
   const [path] = useState(decodeURIComponent(name));
   const [store] = useState(createTLStore({ shapes: defaultShapes }));
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // setLoading(true);
     loadSnapshot({ path, store })
       .then(() => {
         Toast.show({
@@ -22,8 +20,7 @@ export function Draw() {
           icon: <UploadOutline />,
         });
       })
-      .catch()
-      .finally(() => setLoading(false));
+      .catch();
 
     return () => {
       saveSnapshot({ path, store })
@@ -39,32 +36,10 @@ export function Draw() {
 
   return (
     <Fragment>
-      {!loading && (
-        <Canvas
-          store={store}
-          autoFocus={true}
-        />
-      )}
+      <Canvas
+        store={store}
+        autoFocus={true}
+      />
     </Fragment>
   );
-}
-
-async function loadSnapshot(params: { path: string; store: TLStore }) {
-  const { path, store } = params;
-
-  const jsonSnapshot = await readFile({ path });
-
-  if (!jsonSnapshot) return;
-
-  const snapshot = JSON.parse(jsonSnapshot);
-
-  store.loadSnapshot(snapshot);
-}
-
-async function saveSnapshot(params: { path: string; store: TLStore }) {
-  const { path, store } = params;
-
-  const snapshot = store.getSnapshot();
-
-  await writeFile({ path, data: JSON.stringify(snapshot) });
 }

@@ -1,6 +1,6 @@
 import { EMPTY_STRING } from "@/constants/primitive";
 
-export function getDecodedComponent(params: {
+export function getDecodedURIComponent(params: {
   name: string;
   from: URLSearchParams;
 }) {

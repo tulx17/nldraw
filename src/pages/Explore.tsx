@@ -2,16 +2,14 @@ import { Button, List, ListItem, Stack, Swipe } from "@/components";
 import { EMPTY_STRING, PATH_SEPARATOR } from "@/constants/primitive";
 import { useInit } from "@/hooks";
 import {
-  createDir,
-  joinPath,
-  readDir,
-  removeDir,
-  removeFile,
-  writeFile,
-} from "@/utilities/filesystem";
-import { getDecodedComponent as getDecodedURIComponent } from "@/utilities/searchParams";
+  handleCreateDirectory,
+  handleCreateFile,
+  handleRemoveDirectory,
+  handleRemoveFile,
+} from "@/pages/Explore.module";
+import { joinPath, readDir } from "@/utilities/filesystem";
+import { getDecodedURIComponent } from "@/utilities/searchParams";
 import { FileInfo } from "@capacitor/filesystem";
-import { Toast } from "antd-mobile";
 import {
   AddSquareOutline,
   FileOutline,
@@ -23,7 +21,6 @@ import { Fragment, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 export function Explore() {
-  // #region logic
   const navigate = useNavigate();
 
   const [query, setQuery] = useSearchParams({ directory: EMPTY_STRING });
@@ -63,7 +60,7 @@ export function Explore() {
       directory: joinPath(...segments.slice(0, -1)),
     }));
   }
-  // #endregion
+
   return (
     <Fragment>
       <Stack
@@ -224,124 +221,4 @@ export function Explore() {
       </List>
     </Fragment>
   );
-}
-
-async function handleRemoveFile(
-  decodedDirectory: string,
-  name: string,
-  refreshDirectory: () => void
-) {
-  const result = await removeFile({
-    path: joinPath(decodedDirectory, name),
-  });
-
-  if (!result) {
-    Toast.show("Failed");
-    return;
-  }
-
-  Toast.show("Success");
-
-  refreshDirectory();
-}
-
-async function handleRemoveDirectory(
-  decodedDirectory: string,
-  name: string,
-  refreshDirectory: () => void
-) {
-  const result = await removeDir({
-    path: joinPath(decodedDirectory, name),
-    forced: true,
-  });
-
-  if (!result) {
-    Toast.show("Failed");
-    return;
-  }
-
-  Toast.show("Success");
-
-  refreshDirectory();
-}
-
-async function handleCreateDirectory(
-  query: URLSearchParams,
-  directoryContent: FileInfo[],
-  refreshDirectory: () => void
-) {
-  const folderName = [
-    (
-      directoryContent.filter(
-        (entry) => entry.type === "directory" && !/\.tldr$/.test(entry.name)
-      ).length + 1
-    )
-      .toString()
-      .padStart(3, "0"),
-  ].join(".");
-
-  const result = await createDir({
-    path: joinPath(
-      getDecodedURIComponent({ from: query, name: "directory" }),
-      folderName
-    ),
-  });
-
-  if (!result) {
-    Toast.show("Failed");
-    return;
-  }
-
-  Toast.show({
-    content: "Success",
-    icon: <FolderOutline />,
-  });
-
-  refreshDirectory();
-}
-
-async function handleCreateFile(
-  query: URLSearchParams,
-  directoryContent: FileInfo[],
-  refreshDirectory: () => void
-) {
-  const encodedDirectory = getDecodedURIComponent({
-    from: query,
-    name: "directory",
-  });
-
-  const fileName = [
-    "draw",
-    (
-      directoryContent.filter(
-        (entry) => entry.type === "directory" && /\.tldr$/.test(entry.name)
-      ).length + 1
-    )
-      .toString()
-      .padStart(6, "0"),
-    "tldr",
-  ].join(".");
-
-  const path = joinPath(encodedDirectory, fileName);
-
-  const container = await createDir({ path });
-
-  if (!container) return;
-
-  const file = await writeFile({
-    path: joinPath(path, "snapshot.tldr"),
-    data: fileName,
-  });
-
-  if (!file) {
-    Toast.show("Failed");
-    return;
-  }
-
-  Toast.show({
-    content: "Success",
-    icon: <FileOutline />,
-  });
-
-  refreshDirectory();
 }
