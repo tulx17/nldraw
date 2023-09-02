@@ -1,5 +1,6 @@
 import { Button, List, ListItem, Stack, Swipe } from "@/components";
 import { EMPTY_STRING, PATH_SEPARATOR } from "@/constants/primitive";
+import { useInit } from "@/hooks";
 import {
   createDir,
   joinPath,
@@ -10,6 +11,7 @@ import {
 } from "@/utilities/filesystem";
 import { getDecodedComponent as getDecodedURIComponent } from "@/utilities/searchParams";
 import { FileInfo } from "@capacitor/filesystem";
+import { Toast } from "antd-mobile";
 import {
   AddSquareOutline,
   FileOutline,
@@ -21,10 +23,17 @@ import { Fragment, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
 export function Explore() {
+  // #region logic
   const navigate = useNavigate();
 
   const [query, setQuery] = useSearchParams({ directory: EMPTY_STRING });
   const [directoryContent, setDirectoryContent] = useState<Array<FileInfo>>([]);
+
+  useInit({
+    init() {
+      refreshDirectory();
+    },
+  });
 
   useEffect(() => {
     refreshDirectory();
@@ -32,14 +41,11 @@ export function Explore() {
 
   function refreshDirectory() {
     readDir({
-      path: getDecodedURIComponent({
-        from: query,
-        name: "directory",
-      }),
+      path: getDecodedURIComponent({ from: query, name: "directory" }),
     }).then(setDirectoryContent);
   }
 
-  function toParentDirectory() {
+  function goToParentDirectory() {
     const segments = getDecodedURIComponent({
       from: query,
       name: "directory",
@@ -57,7 +63,7 @@ export function Explore() {
       directory: joinPath(...segments.slice(0, -1)),
     }));
   }
-
+  // #endregion
   return (
     <Fragment>
       <Stack
@@ -67,32 +73,17 @@ export function Explore() {
           width: "100%",
         }}
       >
-        <Stack>{query.toString()}</Stack>
+        <Stack>
+          {getDecodedURIComponent({ from: query, name: "directory" })}
+        </Stack>
         <Stack justify={"end"}>
           <Button onClick={refreshDirectory}>
             <RedoOutline />
           </Button>
           <Button
-            onClick={() => {
-              writeFile({
-                path: joinPath(
-                  getDecodedURIComponent({
-                    from: query,
-                    name: "directory",
-                  }),
-                  [
-                    "tmp",
-                    (
-                      directoryContent.filter((entry) => entry.type === "file")
-                        .length + 1
-                    )
-                      .toString()
-                      .padStart(2, "0"),
-                    "txt",
-                  ].join(".")
-                ),
-              }).then(refreshDirectory);
-            }}
+            onClick={async () =>
+              await handleCreateFile(query, directoryContent, refreshDirectory)
+            }
           >
             <Stack>
               <AddSquareOutline />
@@ -100,26 +91,13 @@ export function Explore() {
             </Stack>
           </Button>
           <Button
-            onClick={() => {
-              createDir({
-                path: joinPath(
-                  getDecodedURIComponent({
-                    from: query,
-                    name: "directory",
-                  }),
-                  [
-                    "tmp",
-                    (
-                      directoryContent.filter(
-                        (entry) => entry.type === "directory"
-                      ).length + 1
-                    )
-                      .toString()
-                      .padStart(2, "0"),
-                  ].join(".")
-                ),
-              }).then(refreshDirectory);
-            }}
+            onClick={async () =>
+              await handleCreateDirectory(
+                query,
+                directoryContent,
+                refreshDirectory
+              )
+            }
           >
             <Stack>
               <AddSquareOutline />
@@ -135,7 +113,7 @@ export function Explore() {
         <ListItem
           clickable={!!query.get("directory")}
           disabled={!query.get("directory")}
-          onClick={toParentDirectory}
+          onClick={goToParentDirectory}
         >
           ..
         </ListItem>
@@ -143,87 +121,196 @@ export function Explore() {
           directoryContent.map(({ name, size, uri, type }) => {
             const isDirectory = type === "directory";
 
-            return (
-              <Swipe
-                key={uri}
-                leftActions={[
-                  {
-                    key: "duplicate",
-                    text: "Duplicate",
-                  },
-                ]}
-                rightActions={[
-                  {
-                    key: "remove",
-                    text: "Remove",
-                    onClick() {
-                      const decodedDirectory = getDecodedURIComponent({
-                        from: query,
-                        name: "directory",
-                      });
-                      switch (isDirectory) {
-                        case true:
-                          removeDir({
-                            path: joinPath(decodedDirectory, name),
-                          }).then(refreshDirectory);
-                          break;
+            const decodedDirectory = getDecodedURIComponent({
+              from: query,
+              name: "directory",
+            });
 
-                        default:
-                          removeFile({
-                            path: joinPath(decodedDirectory, name),
-                          }).then(refreshDirectory);
-                          break;
-                      }
-                    },
-                  },
-                ]}
-              >
-                <ListItem
-                  description={[size, "B"].join(EMPTY_STRING)}
-                  arrow={isDirectory}
-                  prefix={isDirectory ? <FolderOutline /> : <FileOutline />}
-                  onClick={() => {
-                    switch (isDirectory) {
-                      case true:
-                        // setDirectory((prev) => joinPath(prev, name));
+            switch (isDirectory) {
+              case true:
+                return (
+                  <Swipe
+                    key={uri}
+                    rightActions={[
+                      {
+                        key: "remove",
+                        text: "Remove",
+                        color: "danger",
+                        async onClick() {
+                          await handleRemoveDirectory(
+                            decodedDirectory,
+                            name,
+                            refreshDirectory
+                          );
+                        },
+                      },
+                    ]}
+                  >
+                    <ListItem
+                      description={[size, "B"].join(EMPTY_STRING)}
+                      arrow={true}
+                      prefix={<FolderOutline />}
+                      onClick={() => {
                         setQuery((prev) => ({
                           ...prev,
-                          directory: joinPath(
-                            getDecodedURIComponent({
-                              from: query,
-                              name: "directory",
-                            }),
-                            name
-                          ),
+                          directory: joinPath(decodedDirectory, name),
                         }));
-                        break;
+                      }}
+                    >
+                      {name}
+                    </ListItem>
+                  </Swipe>
+                );
 
-                      default:
+              default:
+                return (
+                  <Swipe
+                    key={uri}
+                    leftActions={[
+                      {
+                        key: "duplicate",
+                        text: "Duplicate",
+                      },
+                    ]}
+                    rightActions={[
+                      {
+                        key: "remove",
+                        text: "Remove",
+                        color: "danger",
+                        async onClick() {
+                          await handleRemoveFile(
+                            decodedDirectory,
+                            name,
+                            refreshDirectory
+                          );
+                        },
+                      },
+                    ]}
+                  >
+                    <ListItem
+                      description={[size, "B"].join(EMPTY_STRING)}
+                      prefix={<FileOutline />}
+                      onClick={() => {
                         navigate(
                           joinPath(
                             "..",
                             "draw",
-                            encodeURIComponent(
-                              joinPath(
-                                getDecodedURIComponent({
-                                  from: query,
-                                  name: "directory",
-                                }),
-                                name
-                              )
-                            )
+                            encodeURIComponent(joinPath(decodedDirectory, name))
                           )
                         );
-                        break;
-                    }
-                  }}
-                >
-                  {name}
-                </ListItem>
-              </Swipe>
-            );
+                      }}
+                    >
+                      {name}
+                    </ListItem>
+                  </Swipe>
+                );
+            }
           })}
       </List>
     </Fragment>
   );
+}
+
+async function handleRemoveFile(
+  decodedDirectory: string,
+  name: string,
+  refreshDirectory: () => void
+) {
+  const result = await removeFile({
+    path: joinPath(decodedDirectory, name),
+  });
+
+  if (!result) {
+    Toast.show("Failed");
+    return;
+  }
+
+  Toast.show("Success");
+
+  refreshDirectory();
+}
+
+async function handleRemoveDirectory(
+  decodedDirectory: string,
+  name: string,
+  refreshDirectory: () => void
+) {
+  const result = await removeDir({
+    path: joinPath(decodedDirectory, name),
+  });
+
+  if (!result) {
+    Toast.show("Failed");
+    return;
+  }
+
+  Toast.show("Success");
+
+  refreshDirectory();
+}
+
+async function handleCreateDirectory(
+  query: URLSearchParams,
+  directoryContent: FileInfo[],
+  refreshDirectory: () => void
+) {
+  const folderName = [
+    "tmp",
+    (directoryContent.filter((entry) => entry.type === "directory").length + 1)
+      .toString()
+      .padStart(2, "0"),
+  ].join(".");
+
+  const result = await createDir({
+    path: joinPath(
+      getDecodedURIComponent({ from: query, name: "directory" }),
+      folderName
+    ),
+  });
+
+  if (!result) {
+    Toast.show("Failed");
+    return;
+  }
+
+  Toast.show({
+    content: "Success",
+    icon: <FolderOutline />,
+  });
+
+  refreshDirectory();
+}
+
+async function handleCreateFile(
+  query: URLSearchParams,
+  directoryContent: FileInfo[],
+  refreshDirectory: () => void
+) {
+  const fileName = [
+    "tmp",
+    (directoryContent.filter((entry) => entry.type === "file").length + 1)
+      .toString()
+      .padStart(2, "0"),
+    "txt",
+  ].join(".");
+
+  const result = await writeFile({
+    path: joinPath(
+      getDecodedURIComponent({ from: query, name: "directory" }),
+      fileName
+    ),
+    data: fileName,
+  });
+
+  if (!result) {
+    Toast.show("Failed");
+    return;
+  }
+
+  Toast.show({
+    content: "Success",
+    icon: <FileOutline />,
+  });
+
+  refreshDirectory();
 }

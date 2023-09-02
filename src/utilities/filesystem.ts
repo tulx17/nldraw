@@ -16,13 +16,15 @@ export async function createDir(params: { path: string }) {
 
   if (!!target) return target;
 
+  const newPath = joinPath(WORK_DIR, path);
+
   const result = await fs
     .mkdir({
-      path: joinPath(WORK_DIR, path),
+      path: newPath,
       directory: FS_DIRECTORY,
       recursive: FS_RECURSIVE,
     })
-    .then(() => target)
+    .then(() => newPath)
     .catch(() => EMPTY_STRING);
 
   return result;
