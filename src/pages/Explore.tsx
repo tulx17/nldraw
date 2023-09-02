@@ -190,6 +190,7 @@ export function Explore() {
                     <ListItem
                       description={[size, "B"].join(EMPTY_STRING)}
                       prefix={<FileOutline />}
+                      arrow={false}
                       onClick={() => {
                         navigate(
                           joinPath(
