@@ -1,6 +1,5 @@
 import { Button, List, ListItem, Stack, Swipe } from "@/components";
 import { EMPTY_STRING, PATH_SEPARATOR } from "@/constants/primitive";
-import { useInit } from "@/hooks";
 import {
   createDir,
   joinPath,
@@ -9,6 +8,7 @@ import {
   removeFile,
   writeFile,
 } from "@/utilities/filesystem";
+import { getDecodedComponent as getDecodedURIComponent } from "@/utilities/searchParams";
 import { FileInfo } from "@capacitor/filesystem";
 import {
   AddSquareOutline,
@@ -18,37 +18,44 @@ import {
   SetOutline,
 } from "antd-mobile-icons";
 import { Fragment, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 export function Explore() {
   const navigate = useNavigate();
 
-  const [directory, setDirectory] = useState(EMPTY_STRING);
+  const [query, setQuery] = useSearchParams({ directory: EMPTY_STRING });
   const [directoryContent, setDirectoryContent] = useState<Array<FileInfo>>([]);
-
-  useInit({
-    init() {
-      refreshDirectory();
-    },
-  });
 
   useEffect(() => {
     refreshDirectory();
-  }, [directory]);
+  }, [query]);
 
   function refreshDirectory() {
-    readDir({ path: directory }).then(setDirectoryContent);
+    readDir({
+      path: getDecodedURIComponent({
+        from: query,
+        name: "directory",
+      }),
+    }).then(setDirectoryContent);
   }
 
   function toParentDirectory() {
-    const segments = directory.split(PATH_SEPARATOR).filter(Boolean);
+    const segments = getDecodedURIComponent({
+      from: query,
+      name: "directory",
+    })
+      .split(PATH_SEPARATOR)
+      .filter(Boolean);
 
     if (segments.length <= 1) {
-      setDirectory(EMPTY_STRING);
+      setQuery((prev) => ({ ...prev, directory: EMPTY_STRING }));
       return;
     }
 
-    setDirectory(joinPath(...segments.slice(0, -1)));
+    setQuery((prev) => ({
+      ...prev,
+      directory: joinPath(...segments.slice(0, -1)),
+    }));
   }
 
   return (
@@ -60,7 +67,7 @@ export function Explore() {
           width: "100%",
         }}
       >
-        <Stack>Directory</Stack>
+        <Stack>{query.toString()}</Stack>
         <Stack justify={"end"}>
           <Button onClick={refreshDirectory}>
             <RedoOutline />
@@ -69,7 +76,10 @@ export function Explore() {
             onClick={() => {
               writeFile({
                 path: joinPath(
-                  directory,
+                  getDecodedURIComponent({
+                    from: query,
+                    name: "directory",
+                  }),
                   [
                     "tmp",
                     (
@@ -93,7 +103,10 @@ export function Explore() {
             onClick={() => {
               createDir({
                 path: joinPath(
-                  directory,
+                  getDecodedURIComponent({
+                    from: query,
+                    name: "directory",
+                  }),
                   [
                     "tmp",
                     (
@@ -120,8 +133,8 @@ export function Explore() {
       </Stack>
       <List>
         <ListItem
-          clickable={!!directory}
-          disabled={!directory}
+          clickable={!!query.get("directory")}
+          disabled={!query.get("directory")}
           onClick={toParentDirectory}
         >
           ..
@@ -144,16 +157,20 @@ export function Explore() {
                     key: "remove",
                     text: "Remove",
                     onClick() {
+                      const decodedDirectory = getDecodedURIComponent({
+                        from: query,
+                        name: "directory",
+                      });
                       switch (isDirectory) {
                         case true:
                           removeDir({
-                            path: joinPath(directory, name),
+                            path: joinPath(decodedDirectory, name),
                           }).then(refreshDirectory);
                           break;
 
                         default:
                           removeFile({
-                            path: joinPath(directory, name),
+                            path: joinPath(decodedDirectory, name),
                           }).then(refreshDirectory);
                           break;
                       }
@@ -168,10 +185,35 @@ export function Explore() {
                   onClick={() => {
                     switch (isDirectory) {
                       case true:
-                        setDirectory((prev) => joinPath(prev, name));
+                        // setDirectory((prev) => joinPath(prev, name));
+                        setQuery((prev) => ({
+                          ...prev,
+                          directory: joinPath(
+                            getDecodedURIComponent({
+                              from: query,
+                              name: "directory",
+                            }),
+                            name
+                          ),
+                        }));
                         break;
 
                       default:
+                        navigate(
+                          joinPath(
+                            "..",
+                            "draw",
+                            encodeURIComponent(
+                              joinPath(
+                                getDecodedURIComponent({
+                                  from: query,
+                                  name: "directory",
+                                }),
+                                name
+                              )
+                            )
+                          )
+                        );
                         break;
                     }
                   }}

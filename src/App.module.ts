@@ -1,8 +1,9 @@
 import { EMPTY_STRING } from "@/constants/primitive";
-import { enableDarkMode } from "@/utilities/darkMode";
+import { disableDarkMode, enableDarkMode } from "@/utilities/darkMode";
 import { createDir } from "@/utilities/filesystem";
 import { logger } from "@/utilities/logger";
 import { hideStatusBar } from "@/utilities/statusBar";
+import { getMatchesMedia } from "@/utilities/window";
 
 export async function init() {
   // #region hide status bar
@@ -16,6 +17,15 @@ export async function init() {
   // #endregion
 
   // #region enable dark mode
-  enableDarkMode();
+  const matchesDark = getMatchesMedia("(prefers-color-scheme: dark)").matches;
+  switch (matchesDark) {
+    case false:
+      disableDarkMode();
+      break;
+
+    default:
+      enableDarkMode();
+      break;
+  }
   // #endregion
 }
