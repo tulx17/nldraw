@@ -1,16 +1,16 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: "app.tulx.tldraw",
-  appName: "Tldraw",
+  appId: "io.tulx.nldraw",
+  appName: "Nldraw",
   webDir: "dist",
   server: {
     androidScheme: "https",
   },
   plugins: {
-    PrivacyScreen: {
-      enable: true,
-    },
+    // PrivacyScreen: {
+    //   enable: true,
+    // },
   },
 };
 

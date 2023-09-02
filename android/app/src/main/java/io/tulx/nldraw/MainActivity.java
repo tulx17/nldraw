@@ -1,4 +1,4 @@
-package app.tulx.tldraw;
+package io.tulx.nldraw;
 
 import com.getcapacitor.BridgeActivity;
 
