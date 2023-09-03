@@ -1,21 +1,10 @@
-import { Button, List, ListItem, Stack, Swipe } from "@/components";
+import { List, ListItem, Stack } from "@/components";
 import { EMPTY_STRING, PATH_SEPARATOR } from "@/constants/primitive";
 import { useInit } from "@/hooks";
-import {
-  handleCreateDirectory,
-  handleCreateFile,
-  handleRemoveDirectory,
-  handleRemoveFile,
-} from "@/pages/explore/Explore.module";
+import { Actions, DirectoryEntry } from "@/pages/explore/components";
 import { joinPath, readDir } from "@/utilities/filesystem";
 import { getDecodedURIComponent } from "@/utilities/searchParams";
 import { FileInfo } from "@capacitor/filesystem";
-import {
-  AddSquareOutline,
-  FileOutline,
-  FolderOutline,
-  SetOutline,
-} from "antd-mobile-icons";
 import { Fragment, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 
@@ -63,156 +52,46 @@ export function Explore() {
   return (
     <Fragment>
       <Stack
-        justify={"between"}
+        justify={"end"}
         align={"center"}
         style={{
           width: "100%",
         }}
       >
-        <Stack>
-          {getDecodedURIComponent({ from: query, name: "directory" })}
-        </Stack>
-        <Stack justify={"end"}>
-          <Button
-            onClick={async () =>
-              await handleCreateFile(query, directoryContent, refreshDirectory)
-            }
-          >
-            <Stack>
-              <AddSquareOutline />
-              <span>File</span>
-            </Stack>
-          </Button>
-          <Button
-            onClick={async () =>
-              await handleCreateDirectory(
-                query,
-                directoryContent,
-                refreshDirectory
-              )
-            }
-          >
-            <Stack>
-              <AddSquareOutline />
-              <span>Directory</span>
-            </Stack>
-          </Button>
-          <Button onClick={() => navigate(joinPath("..", "preferences"))}>
-            <SetOutline />
-          </Button>
-        </Stack>
+        <Actions
+          query={query}
+          navigate={navigate}
+          refreshDirectory={refreshDirectory}
+        />
       </Stack>
       <List>
         <ListItem
-          clickable={!!query.get("directory")}
           disabled={!query.get("directory")}
           onClick={goToParentDirectory}
         >
           ..
         </ListItem>
         {!!directoryContent.length &&
-          directoryContent.map(({ name, size, uri, type }) => {
-            const isDirectory = type === "directory";
+          directoryContent.map(({ name, uri }) => {
+            const isDraw = /\.tldr$/.test(name);
 
             const decodedDirectory = getDecodedURIComponent({
               from: query,
               name: "directory",
             });
 
-            switch (isDirectory) {
-              case true:
-                const isContainer = /\.tldr/.test(name);
-                return (
-                  <Swipe
-                    key={uri}
-                    rightActions={[
-                      {
-                        key: "remove",
-                        text: "Remove",
-                        color: "danger",
-                        async onClick() {
-                          await handleRemoveDirectory(
-                            decodedDirectory,
-                            name,
-                            refreshDirectory
-                          );
-                        },
-                      },
-                    ]}
-                  >
-                    <ListItem
-                      description={[size, "B"].join(EMPTY_STRING)}
-                      arrow={!isContainer}
-                      prefix={isContainer ? <></> : <FolderOutline />}
-                      onClick={() => {
-                        if (!isContainer) {
-                          setQuery((prev) => ({
-                            ...prev,
-                            directory: joinPath(decodedDirectory, name),
-                          }));
-                          return;
-                        }
-
-                        navigate(
-                          joinPath(
-                            "..",
-                            "draw",
-                            encodeURIComponent(
-                              joinPath(decodedDirectory, name, "snapshot.tldr")
-                            )
-                          )
-                        );
-                      }}
-                    >
-                      {name}
-                    </ListItem>
-                  </Swipe>
-                );
-
-              default:
-                return (
-                  <Swipe
-                    key={uri}
-                    leftActions={[
-                      {
-                        key: "duplicate",
-                        text: "Duplicate",
-                      },
-                    ]}
-                    rightActions={[
-                      {
-                        key: "remove",
-                        text: "Remove",
-                        color: "danger",
-                        async onClick() {
-                          await handleRemoveFile(
-                            decodedDirectory,
-                            name,
-                            refreshDirectory
-                          );
-                        },
-                      },
-                    ]}
-                  >
-                    <ListItem
-                      description={[size, "B"].join(EMPTY_STRING)}
-                      prefix={<FileOutline />}
-                      arrow={false}
-                      onClick={() => {
-                        navigate(
-                          joinPath(
-                            "..",
-                            "draw",
-                            encodeURIComponent(joinPath(decodedDirectory, name))
-                          )
-                        );
-                      }}
-                    >
-                      {name}
-                    </ListItem>
-                  </Swipe>
-                );
-            }
+            return (
+              <DirectoryEntry
+                key={uri}
+                decodedDirectory={decodedDirectory}
+                entryName={name}
+                entryURI={uri}
+                isDraw={isDraw}
+                navigate={navigate}
+                refreshDirectory={refreshDirectory}
+                setQuery={setQuery}
+              />
+            );
           })}
       </List>
     </Fragment>

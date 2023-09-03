@@ -6,9 +6,9 @@ import {
   writeFile,
 } from "@/utilities/filesystem";
 import { getDecodedURIComponent } from "@/utilities/searchParams";
-import { FileInfo } from "@capacitor/filesystem";
 import { Toast } from "antd-mobile";
 import { FileOutline, FolderOutline } from "antd-mobile-icons";
+import { format } from "date-fns";
 
 export async function handleRemoveFile(
   decodedDirectory: string,
@@ -49,20 +49,12 @@ export async function handleRemoveDirectory(
   refreshDirectory();
 }
 
-export async function handleCreateDirectory(
+export async function handleCreateGroup(
   query: URLSearchParams,
-  directoryContent: FileInfo[],
-  refreshDirectory: () => void
+  refreshDirectory: () => void,
+  name?: string
 ) {
-  const folderName = [
-    (
-      directoryContent.filter(
-        (entry) => entry.type === "directory" && !/\.tldr$/.test(entry.name)
-      ).length + 1
-    )
-      .toString()
-      .padStart(3, "0"),
-  ].join(".");
+  const folderName = name || format(Date.now(), "yyyy-MM-dd");
 
   const result = await createDir({
     path: joinPath(
@@ -84,27 +76,19 @@ export async function handleCreateDirectory(
   refreshDirectory();
 }
 
-export async function handleCreateFile(
+export async function handleCreateDraw(
   query: URLSearchParams,
-  directoryContent: FileInfo[],
-  refreshDirectory: () => void
+  refreshDirectory: () => void,
+  name?: string
 ) {
   const encodedDirectory = getDecodedURIComponent({
     from: query,
     name: "directory",
   });
 
-  const fileName = [
-    "draw",
-    (
-      directoryContent.filter(
-        (entry) => entry.type === "directory" && /\.tldr$/.test(entry.name)
-      ).length + 1
-    )
-      .toString()
-      .padStart(6, "0"),
-    "tldr",
-  ].join(".");
+  const fileName =
+    name ||
+    ["draw", format(Date.now(), "yyyy-MM-dd'T'HHmmss"), "tldr"].join(".");
 
   const path = joinPath(encodedDirectory, fileName);
 
