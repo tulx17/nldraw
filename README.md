@@ -19,7 +19,9 @@ are currently scheduled for development.
 
 > WIP
 
-![App Screenshot](assets)
+![Explore](screenshots/Screenshot_20230903-180256.png)
+![Actions](screenshots/Screenshot_20230903-180305.png)
+![Draw](screenshots/Screenshot_20230903-181805.png)
 
 ## Features
 
