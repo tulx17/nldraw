@@ -1,6 +1,6 @@
 import { Canvas } from "@/components";
 import { EMPTY_STRING } from "@/constants/primitive";
-import { loadSnapshot, saveSnapshot } from "@/pages/Draw.module";
+import { loadSnapshot, saveSnapshot } from "@/pages/draw/Draw.module";
 import { createTLStore, defaultShapeUtils } from "@tldraw/tldraw";
 import { Toast } from "antd-mobile";
 import { DownlandOutline, UploadOutline } from "antd-mobile-icons";

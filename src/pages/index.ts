@@ -1,4 +1,4 @@
-export * from "@/pages/Draw";
-export * from "@/pages/Explore";
-export * from "@/pages/Preferences";
 export * from "@/pages/Root";
+export * from "@/pages/draw";
+export * from "@/pages/explore";
+export * from "@/pages/preferences";

@@ -6,7 +6,7 @@ import {
   handleCreateFile,
   handleRemoveDirectory,
   handleRemoveFile,
-} from "@/pages/Explore.module";
+} from "@/pages/explore/Explore.module";
 import { joinPath, readDir } from "@/utilities/filesystem";
 import { getDecodedURIComponent } from "@/utilities/searchParams";
 import { FileInfo } from "@capacitor/filesystem";
