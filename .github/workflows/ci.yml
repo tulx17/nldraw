@@ -1,8 +1,6 @@
 name: Nldraw CI
 on:
   push:
-    branches:
-      - main
     tags:
       - v*
 
@@ -48,5 +46,5 @@ jobs:
       - name: Upload APK(s)
         uses: actions/upload-artifact@v3
         with:
-          name: APK(s)
+          name: ${{github.ref_name}} APK(s)
           path: android/app/build/outputs/apk/**/*.apk
