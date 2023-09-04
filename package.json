@@ -11,6 +11,7 @@
     "capacitor": "cap",
     "capacitor:copy:before": "npm run build",
     "deploy:android": "cap run android",
+    "sync:android": "cap sync android",
     "config": "trapeze run config.yml --android-project android"
   },
   "dependencies": {

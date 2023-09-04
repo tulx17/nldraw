@@ -15,14 +15,6 @@ Please note that this project is intended for personal use and experimentation.
 It is not actively maintained, and none of the features mentioned in the roadmap
 are currently scheduled for development.
 
-## Screenshots
-
-> WIP
-
-![Explore](screenshots/Screenshot_20230903-180256.png)
-![Actions](screenshots/Screenshot_20230903-180305.png)
-![Draw](screenshots/Screenshot_20230903-185138.png)
-
 ## Features
 
 > WIP
@@ -30,13 +22,35 @@ are currently scheduled for development.
 - [x] Use [tldraw](https://tldraw.com) snapshot with native filesystem instead
       of localStorage.
 
+### Screenshots
+
+> WIP
+
+![Explore](screenshots/Screenshot_20230903-180256.png)
+![Actions](screenshots/Screenshot_20230903-180305.png)
+![Draw](screenshots/Screenshot_20230903-185138.png)
+
 ## Installation
 
 > WIP
->
-> > Github workflow should be added later.
 
-### Pre-built from Github release (WIP)
+### From artifact
+
+#### Locally with [act](https://github.com/nektos/act)
+
+```sh
+git clone https://github.com/tulx17/nldraw.git && cd nldraw
+```
+
+```sh
+mkdir artifact
+```
+
+```sh
+act workflow_dispatch --artifact-server-path artifact -W .github/workflows/ci.yml
+```
+
+> APK(s) should be in the created artifact directory
 
 ### Build it your self
 

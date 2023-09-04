@@ -1,0 +1,52 @@
+name: Nldraw CI
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - v*
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Clean install dependencies
+        run: npm ci
+
+      - name: Prepare dist
+        run: mkdir dist && touch dist/index.html
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: temurin
+          cache: gradle
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v2
+
+      - name: Fix gradlew permissions
+        run: chmod +x android/gradlew
+
+      - name: Sync web assets with native
+        run: npm run sync:android
+
+      - name: Create APK(s)
+        working-directory: android
+        run: ./gradlew assemble
+
+      - name: Upload APK(s)
+        uses: actions/upload-artifact@v3
+        with:
+          name: APK(s)
+          path: android/app/build/outputs/apk/**/*.apk
