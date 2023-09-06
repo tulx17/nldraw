@@ -1,11 +1,11 @@
-import { status } from "@/utilities/capacitor";
+import { statusBar } from "@/utilities/capacitor";
 
 export async function showStatusBar() {
   const { visible } = await getStatusBarInfo();
 
   if (visible) return;
 
-  await status.show();
+  await statusBar.show();
 }
 
 export async function hideStatusBar() {
@@ -13,7 +13,7 @@ export async function hideStatusBar() {
 
   if (!visible) return;
 
-  status.hide();
+  statusBar.hide();
 }
 
 export async function toggleStatusBar() {
@@ -21,17 +21,17 @@ export async function toggleStatusBar() {
 
   switch (visible) {
     case false:
-      await status.show();
+      await statusBar.show();
       break;
 
     default:
-      await status.hide();
+      await statusBar.hide();
       break;
   }
 }
 
 async function getStatusBarInfo() {
-  const info = await status.getInfo();
+  const info = await statusBar.getInfo();
 
   return info;
 }

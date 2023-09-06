@@ -1,38 +1,60 @@
 import { Canvas } from "@/components";
-import { EMPTY_STRING } from "@/constants/primitive";
+import { EMPTY_STRING, SPACE_SEPARATOR } from "@/constants/primitive";
+import { useInit } from "@/hooks";
 import { loadSnapshot, saveSnapshot } from "@/pages/draw/Draw.module";
-import { createTLStore, defaultShapeUtils } from "@tldraw/tldraw";
+import { TLStore, createTLStore, defaultShapeUtils } from "@tldraw/tldraw";
 import { Toast } from "antd-mobile";
-import { DownlandOutline, UploadOutline } from "antd-mobile-icons";
-import { Fragment, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Fragment, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 export function Draw() {
-  const { name = EMPTY_STRING } = useParams();
-  const [path] = useState(decodeURIComponent(name));
-  const [store] = useState(createTLStore({ shapeUtils: defaultShapeUtils }));
+  const navigate = useNavigate();
+  const { path = EMPTY_STRING } = useParams();
 
-  useEffect(() => {
-    loadSnapshot({ path, store })
-      .then(() => {
+  if (!path) {
+    Toast.show({ content: "Draw not found" });
+    navigate(-1);
+    return;
+  }
+
+  const [store] = useState<TLStore>(
+    createTLStore({
+      shapeUtils: defaultShapeUtils,
+    })
+  );
+
+  useInit({
+    async init() {
+      const snapshot = await loadSnapshot({ path, store });
+
+      if (!snapshot) {
         Toast.show({
-          content: ["Loaded", path].join(" "),
-          icon: <UploadOutline />,
+          content: ["Failed to load draw from", path].join(SPACE_SEPARATOR),
         });
-      })
-      .catch();
+        return;
+      }
 
-    return () => {
-      saveSnapshot({ path, store })
-        .then(() =>
-          Toast.show({
-            content: ["Saved", path].join(" "),
-            icon: <DownlandOutline />,
-          })
-        )
-        .catch();
-    };
-  }, []);
+      Toast.show({
+        content: ["Loaded draw from", path].join(SPACE_SEPARATOR),
+      });
+    },
+    async cleanup() {
+      if (!store) return;
+
+      const result = await saveSnapshot({ path, store });
+
+      if (!result) {
+        Toast.show({
+          content: ["Failed to save draw to", path].join(SPACE_SEPARATOR),
+        });
+        return;
+      }
+
+      Toast.show({
+        content: ["Saved draw to", path].join(SPACE_SEPARATOR),
+      });
+    },
+  });
 
   return (
     <Fragment>

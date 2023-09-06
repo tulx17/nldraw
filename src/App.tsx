@@ -1,6 +1,6 @@
 import { init } from "@/App.module";
 import { useInit } from "@/hooks";
-import { RouterProvider } from "@/providers";
+import { AntDProvider, PreferencesProvider, RouterProvider } from "@/providers";
 import { Fragment } from "react";
 
 export function App() {
@@ -10,7 +10,11 @@ export function App() {
 
   return (
     <Fragment>
-      <RouterProvider />
+      <PreferencesProvider>
+        <AntDProvider>
+          <RouterProvider />
+        </AntDProvider>
+      </PreferencesProvider>
     </Fragment>
   );
 }

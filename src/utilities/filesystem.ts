@@ -1,15 +1,17 @@
 import {
+  DOT_SEPARATOR,
   EMPTY_ARRAY,
   EMPTY_STRING,
   FS_DIRECTORY,
   FS_ENCODING,
   FS_RECURSIVE,
+  PATH_ROOT,
   PATH_SEPARATOR,
   WORK_DIR,
 } from "@/constants/primitive";
 import { fs } from "@/utilities/capacitor";
 
-export async function createDir(params: { path: string }) {
+export async function createDir(params: { path?: string }) {
   const { path = EMPTY_STRING } = { ...params };
 
   const target = await validatePath({ path });
@@ -30,7 +32,7 @@ export async function createDir(params: { path: string }) {
   return result;
 }
 
-export async function readDir(params: { path: string }) {
+export async function readDir(params: { path?: string }) {
   const { path = EMPTY_STRING } = { ...params };
 
   const target = await validatePath({ path });
@@ -141,8 +143,30 @@ export async function validatePath(params: { path: string }) {
 }
 
 export function joinPath(...paths: Array<string | undefined>) {
-  const result = paths.filter(Boolean).join(PATH_SEPARATOR);
+  const result = paths
+    .filter(
+      (segment) => !!segment && !(/^\/+/.test(segment) || /\/+$/.test(segment))
+    )
+    .join(PATH_SEPARATOR);
   return result;
+}
+
+export function joinPathRoot(...paths: Parameters<typeof joinPath>) {
+  return PATH_ROOT + joinPath(...paths);
+}
+
+export function joinFileName(...paths: Array<string | undefined>) {
+  return paths.filter(Boolean).join(DOT_SEPARATOR);
+}
+
+export function getParentDirectory(directory: string | undefined) {
+  if (!directory) return EMPTY_STRING;
+
+  return directory
+    .split(PATH_SEPARATOR)
+    .filter(Boolean)
+    .slice(0, -1)
+    .join(PATH_SEPARATOR);
 }
 
 async function isPermissionsGranted() {

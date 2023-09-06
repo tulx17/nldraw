@@ -10,7 +10,11 @@ export async function loadSnapshot(params: { path: string; store: TLStore }) {
 
   const snapshot = JSON.parse(jsonSnapshot);
 
+  // const store = createTLStore({ shapeUtils: defaultShapeUtils });
+
   store.loadSnapshot(snapshot);
+
+  return snapshot;
 }
 
 export async function saveSnapshot(params: { path: string; store: TLStore }) {
@@ -18,5 +22,7 @@ export async function saveSnapshot(params: { path: string; store: TLStore }) {
 
   const snapshot = store.getSnapshot();
 
-  await writeFile({ path, data: JSON.stringify(snapshot) });
+  const result = await writeFile({ path, data: JSON.stringify(snapshot) });
+
+  return !!result;
 }

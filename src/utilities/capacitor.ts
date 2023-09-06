@@ -13,6 +13,7 @@ import { App } from "@capacitor/app";
 
 export const app = {
   addListener: App.addListener,
+  minimize: App.minimizeApp,
 };
 
 export const device = {
@@ -34,7 +35,7 @@ export const haptics = {
   // ...Haptics,
 };
 
-export const status = {
+export const statusBar = {
   show: StatusBar.show,
   hide: StatusBar.hide,
   getInfo: StatusBar.getInfo,

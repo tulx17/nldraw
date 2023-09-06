@@ -1,42 +1,42 @@
-import { useMediaQuery, useNativeAppEvent } from "@/hooks";
+import { useInit, useNativeAppEvent, usePreferencesContext } from "@/hooks";
+import { minimizeApp } from "@/utilities/app";
 import { disableDarkScheme, enableDarkScheme } from "@/utilities/darkScheme";
-import { Fragment, useEffect } from "react";
+import { Fragment } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
 export function Root() {
   const navigate = useNavigate();
+  const [{ darkScheme }, preferencesDispatch] = usePreferencesContext();
 
-  useNativeAppEvent({
-    backButton({ canGoBack }) {
-      if (!canGoBack) return;
-      navigate(-1);
+  useInit({
+    init() {
+      switch (darkScheme) {
+        case false:
+          disableDarkScheme();
+          break;
+
+        default:
+          enableDarkScheme();
+          preferencesDispatch({ type: "darkScheme.enable" });
+          break;
+      }
     },
   });
 
-  const matchesDark = useMediaQuery("(prefers-color-scheme: dark)");
+  useNativeAppEvent({
+    backButton: ({ canGoBack }) => {
+      if (canGoBack) {
+        navigate(-1);
+        return;
+      }
 
-  useEffect(() => {
-    switch (matchesDark) {
-      case false:
-        disableDarkScheme();
-        break;
-
-      default:
-        enableDarkScheme();
-        break;
-    }
-  }, [matchesDark]);
+      minimizeApp();
+    },
+  });
 
   return (
     <Fragment>
-      {/* <Stack
-        style={{
-          width: "100%",
-        }}
-        direction={"vertical"}
-      > */}
       <Outlet />
-      {/* </Stack> */}
     </Fragment>
   );
 }
