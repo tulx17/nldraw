@@ -1,5 +1,5 @@
 import { Button, Ellipsis, Stack } from "@/components";
-import { EMPTY_STRING, GROUP_REG_INDICATOR } from "@/constants/primitive";
+import { EMPTY_STRING } from "@/constants/primitive";
 import { useExploreContext } from "@/hooks";
 import { readDir } from "@/utilities/filesystem";
 import { RedoOutline } from "antd-mobile-icons";
@@ -21,7 +21,7 @@ export function RefreshButton() {
         {!!directory && (
           <Ellipsis
             direction={"start"}
-            content={directory.replace(GROUP_REG_INDICATOR, EMPTY_STRING)}
+            content={directory.replace(/\.(draw|group)/g, EMPTY_STRING)}
           />
         )}
       </Stack>

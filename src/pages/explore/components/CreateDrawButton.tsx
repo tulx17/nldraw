@@ -2,6 +2,7 @@ import { Button, Form, FormItem, Input, Popup, Stack } from "@/components";
 import {
   DRAW_FILE,
   DRAW_SUFFIX,
+  EMPTY_OBJECT,
   EMPTY_STRING,
   GROUP_REG_INDICATOR,
   JOINT_DATE_TIME_FORMAT,
@@ -39,6 +40,7 @@ export function CreateDrawButton() {
     const { name } = form.getFieldsValue();
     const result = await writeFile({
       path: joinPath(directory, joinFileName(name, DRAW_SUFFIX), DRAW_FILE),
+      data: JSON.stringify(EMPTY_OBJECT),
     });
 
     if (!result) {
@@ -49,15 +51,12 @@ export function CreateDrawButton() {
     }
 
     await reloadFiles()
-      .then(() => {
-        form.resetFields();
-        setVisible(false);
-      })
       .then(() =>
         Toast.show({
           content: ["Draw", name, "created"].join(SPACE_SEPARATOR),
         })
-      );
+      )
+      .then(handleClose);
   }
 
   async function reloadFiles() {

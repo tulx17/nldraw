@@ -48,15 +48,12 @@ export function CreateGroupButton() {
     }
 
     await reloadFiles()
-      .then(() => {
-        form.resetFields();
-        setVisible(false);
-      })
       .then(() =>
         Toast.show({
           content: ["Group", name, "created"].join(SPACE_SEPARATOR),
         })
-      );
+      )
+      .then(handleClose);
   }
 
   async function reloadFiles() {

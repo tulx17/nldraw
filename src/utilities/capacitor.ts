@@ -29,6 +29,7 @@ export const fs = {
   rmdir: Filesystem.rmdir,
   deleteFile: Filesystem.deleteFile,
   checkPermissions: Filesystem.checkPermissions,
+  rename: Filesystem.rename,
 };
 
 export const haptics = {

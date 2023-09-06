@@ -6,13 +6,26 @@ import { Outlet, useNavigate } from "react-router-dom";
 
 export function Root() {
   const navigate = useNavigate();
-  const [{ darkScheme }, preferencesDispatch] = usePreferencesContext();
+  const [preferences, preferencesDispatch] = usePreferencesContext();
 
   useInit({
     init() {
-      switch (darkScheme) {
+      // const savedPreferences = await readFile({
+      //   path: joinPath(META_DIR, PREFERENCES_FILE),
+      // });
+
+      // if (!savedPreferences) {
+      //   await writeFile({
+      //     path: joinPath(META_DIR, PREFERENCES_FILE),
+      //     data: JSON.stringify(DEFAULT_PREFERENCES),
+      //   });
+      //   preferencesDispatch({ type: "reload", payload: DEFAULT_PREFERENCES });
+      // }
+
+      switch (preferences.darkScheme) {
         case false:
           disableDarkScheme();
+          preferencesDispatch({ type: "darkScheme.disable" });
           break;
 
         default:

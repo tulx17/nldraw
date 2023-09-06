@@ -6,5 +6,10 @@ import {
 type EllipsisProps = AntDEllipsisProps;
 
 export function Ellipsis(props: EllipsisProps) {
-  return <AntDEllipsis {...props} />;
+  return (
+    <AntDEllipsis
+      style={{ wordBreak: "break-word" }}
+      {...props}
+    />
+  );
 }

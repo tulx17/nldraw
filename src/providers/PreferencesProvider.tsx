@@ -1,4 +1,6 @@
 import { DEFAULT_PREFERENCES } from "@/constants/default";
+import { META_DIR, PREFERENCES_FILE } from "@/constants/primitive";
+import { joinPath, readFile, writeFile } from "@/utilities/filesystem";
 import { Dispatch, PropsWithChildren, createContext, useReducer } from "react";
 
 export type Preferences = {
@@ -8,7 +10,7 @@ export type Preferences = {
 };
 
 type PreferencesAction =
-  | { type: "load"; payload: Preferences }
+  | { type: "reload"; payload: Preferences }
   | { type: "reset" }
   | { type: "darkScheme.toggle" }
   | { type: "darkScheme.enable" }
@@ -29,7 +31,8 @@ export const PreferencesContext = createContext<
 export function PreferencesProvider(props: PreferencesProviderProps) {
   const [preferences, dispatch] = useReducer(
     preferencesReducer,
-    DEFAULT_PREFERENCES
+    DEFAULT_PREFERENCES,
+    preferencesInitializer
   );
 
   return (
@@ -42,7 +45,7 @@ export function PreferencesProvider(props: PreferencesProviderProps) {
 
 function preferencesReducer(state: Preferences, action: PreferencesAction) {
   switch (action.type) {
-    case "load":
+    case "reload":
       return { ...action.payload };
     case "darkScheme.toggle":
       return { ...state, darkScheme: !state.darkScheme };
@@ -67,19 +70,19 @@ function preferencesReducer(state: Preferences, action: PreferencesAction) {
   }
 }
 
-// function preferencesInitializer() {
-//   let result = DEFAULT_PREFERENCES;
+function preferencesInitializer() {
+  let result = DEFAULT_PREFERENCES;
 
-//   readFile({
-//     path: joinPath(META_DIR, PREFERENCES_FILE),
-//   })
-//     .then((data) => (result = JSON.parse(data)))
-//     .catch(() =>
-//       writeFile({
-//         path: joinPath(META_DIR, PREFERENCES_FILE),
-//         data: JSON.stringify(result),
-//       }).catch()
-//     );
+  readFile({
+    path: joinPath(META_DIR, PREFERENCES_FILE),
+  })
+    .then((data) => (result = JSON.parse(data)))
+    .catch(() =>
+      writeFile({
+        path: joinPath(META_DIR, PREFERENCES_FILE),
+        data: JSON.stringify(result),
+      }).catch()
+    );
 
-//   return result;
-// }
+  return result;
+}

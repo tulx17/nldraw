@@ -21,6 +21,7 @@ export const DRAW_SUFFIX = "draw";
 export const GROUP_SUFFIX = "group";
 export const DRAW_REG_INDICATOR = /\.draw$/;
 export const GROUP_REG_INDICATOR = /\.group$/;
+export const EXTENSION_REG_INDICATOR = /\..*$/;
 export const JOINT_DATE_TIME_FORMAT = "yyyyMMdd'T'HHmmss";
 export const JOINT_DATE_FORMAT = "yyyyMMdd";
 export const DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";

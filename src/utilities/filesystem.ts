@@ -2,6 +2,7 @@ import {
   DOT_SEPARATOR,
   EMPTY_ARRAY,
   EMPTY_STRING,
+  EXTENSION_REG_INDICATOR,
   FS_DIRECTORY,
   FS_ENCODING,
   FS_RECURSIVE,
@@ -122,6 +123,25 @@ export async function removeFile(params: { path: string }) {
   return result;
 }
 
+export async function rename(params: { oldPath: string; newPath: string }) {
+  const { oldPath, newPath } = { ...params };
+
+  const target = await validatePath({ path: oldPath });
+
+  if (!target) return EMPTY_STRING;
+
+  const result = await fs
+    .rename({
+      from: target,
+      to: joinPath(WORK_DIR, newPath),
+      directory: FS_DIRECTORY,
+    })
+    .then(() => target)
+    .catch(() => EMPTY_STRING);
+
+  return result;
+}
+
 export async function validatePath(params: { path: string }) {
   const permissionsGranted = await isPermissionsGranted();
 
@@ -167,6 +187,10 @@ export function getParentDirectory(directory: string | undefined) {
     .filter(Boolean)
     .slice(0, -1)
     .join(PATH_SEPARATOR);
+}
+
+export function stripExtension(path: string) {
+  return path.replace(EXTENSION_REG_INDICATOR, EMPTY_STRING);
 }
 
 async function isPermissionsGranted() {
