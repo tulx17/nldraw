@@ -12,6 +12,8 @@ export function Popup(props: PopupProps) {
   return (
     <AntDPopup
       closeOnSwipe={true}
+      showCloseButton={true}
+      destroyOnClose={true}
       {...props}
     />
   );

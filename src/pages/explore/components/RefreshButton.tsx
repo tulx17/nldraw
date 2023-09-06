@@ -1,7 +1,7 @@
 import { Button, Ellipsis, Stack } from "@/components";
 import { EMPTY_STRING } from "@/constants/primitive";
 import { useExploreContext } from "@/hooks";
-import { readDir } from "@/utilities/filesystem";
+import { getSegments, readDir } from "@/utilities/filesystem";
 import { RedoOutline } from "antd-mobile-icons";
 import { useParams } from "react-router-dom";
 
@@ -21,7 +21,10 @@ export function RefreshButton() {
         {!!directory && (
           <Ellipsis
             direction={"start"}
-            content={directory.replace(/\.(draw|group)/g, EMPTY_STRING)}
+            content={getSegments(directory, -1).replace(
+              /\.group/g,
+              EMPTY_STRING
+            )}
           />
         )}
       </Stack>

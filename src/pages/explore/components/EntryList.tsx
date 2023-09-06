@@ -25,6 +25,7 @@ import {
 import { useExploreContext, useForm } from "@/hooks";
 import {
   getParentDirectory,
+  getSegments,
   joinFileName,
   joinPath,
   readDir,
@@ -158,9 +159,11 @@ export function EntryList() {
             onClick: handleNavigateBack,
             prefix: <LeftOutline />,
           })}
-        >
-          {getParentDirectory(directory) || BACK_SYMBOL}
-        </ListItem>
+          children={
+            getSegments(directory, -4, -1).replace(/\.group/g, EMPTY_STRING) ||
+            BACK_SYMBOL
+          }
+        />
         {Array.from(explore.files)
           .filter((directory) => directory.name !== META_DIR)
           .map((entry) => {

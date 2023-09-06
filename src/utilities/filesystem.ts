@@ -193,6 +193,10 @@ export function stripExtension(path: string) {
   return path.replace(EXTENSION_REG_INDICATOR, EMPTY_STRING);
 }
 
+export function getSegments(path: string, start: number, end?: number) {
+  return path.split(PATH_SEPARATOR).slice(start, end).join(PATH_SEPARATOR);
+}
+
 async function isPermissionsGranted() {
   const result = (await fs.checkPermissions()).publicStorage === "granted";
   return result;
