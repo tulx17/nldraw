@@ -57,26 +57,9 @@ are currently scheduled for development.
 >
 > Still not ready for daily usage.
 
-### From artifact (test build)
+### From [Releases](https://github.com/tulx17/nldraw/releases)
 
-#### Locally with [act](https://github.com/nektos/act)
-
-```sh
-git clone https://github.com/tulx17/nldraw.git && cd nldraw
-```
-
-```sh
-# Feel free to change value of NLDRAW_VERSION to anything you prefer (act,local,...)
-mkdir -p act/artifact \
-  && NLDRAW_VERSION=act \
-    echo "{\"refs\":\"refs/tags/v${NLDRAW_VERSION}\"}" >> act/tag.json
-```
-
-```sh
-act push --eventpath act/tag.json --artifact-server-path act/artifact --workflows .github/workflows/ci.yml
-```
-
-> APK(s) should be in the created act/artifact directory
+### From [Artifact](https://github.com/tulx17/nldraw/actions/workflows/ci.yml) (test build)
 
 ### Build it your self
 
