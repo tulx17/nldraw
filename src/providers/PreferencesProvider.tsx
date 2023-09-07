@@ -5,8 +5,6 @@ import { Dispatch, PropsWithChildren, createContext, useReducer } from "react";
 
 export type Preferences = {
   darkScheme: boolean;
-  privacyScreen: boolean;
-  biometricAuth: boolean;
 };
 
 type PreferencesAction =
@@ -14,13 +12,7 @@ type PreferencesAction =
   | { type: "reset" }
   | { type: "darkScheme.toggle" }
   | { type: "darkScheme.enable" }
-  | { type: "darkScheme.disable" }
-  | { type: "privacyScreen.toggle" }
-  | { type: "privacyScreen.enable" }
-  | { type: "privacyScreen.disable" }
-  | { type: "biometricAuth.toggle" }
-  | { type: "biometricAuth.enable" }
-  | { type: "biometricAuth.disable" };
+  | { type: "darkScheme.disable" };
 
 type PreferencesProviderProps = PropsWithChildren;
 
@@ -53,18 +45,6 @@ function preferencesReducer(state: Preferences, action: PreferencesAction) {
       return { ...state, darkScheme: true };
     case "darkScheme.disable":
       return { ...state, darkScheme: false };
-    case "privacyScreen.toggle":
-      return { ...state, privacyScreen: !state.privacyScreen };
-    case "privacyScreen.enable":
-      return { ...state, privacyScreen: true };
-    case "privacyScreen.disable":
-      return { ...state, privacyScreen: false };
-    case "biometricAuth.toggle":
-      return { ...state, biometricAuth: !state.biometricAuth };
-    case "biometricAuth.enable":
-      return { ...state, biometricAuth: true };
-    case "biometricAuth.disable":
-      return { ...state, biometricAuth: false };
     default:
       return { ...state };
   }

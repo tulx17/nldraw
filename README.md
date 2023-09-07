@@ -73,8 +73,8 @@ Check [Capacitor](capacitorjs.com) for more details.
 - [ ] App configuration.
   - [ ] ~~Custom default location.~~
   - [x] Toggle color scheme (light,dark).
-  - [ ] Privacy screen (prevent screenshots).
-  - [ ] Biometric authentication.
+  - [ ] ~~Privacy screen (prevent screenshots).~~
+  - [ ] ~~Biometric authentication.~~
 - [ ] Remove web specific features.
 - [ ] Replace attachments embedding with reference links.
   - [ ] Use custom component to render linked attachments (image,voice,...).

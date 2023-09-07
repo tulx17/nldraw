@@ -3,6 +3,7 @@ import {
   CreateDrawButton,
   CreateGroupButton,
   EntryList,
+  PreferencesButton,
   RefreshButton,
 } from "@/pages/explore/components";
 import { ExploreProvider } from "@/providers";
@@ -20,6 +21,7 @@ export function Explore() {
           <RefreshButton />
           <CreateDrawButton />
           <CreateGroupButton />
+          <PreferencesButton />
         </Stack>
         <EntryList />
       </ExploreProvider>
