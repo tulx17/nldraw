@@ -3,10 +3,17 @@ on:
   push:
     tags:
       - v*
+  workflow_dispatch:
+    inputs:
+      version:
+        required: true
+        description: Version
+        type: string
 
 jobs:
   build:
     name: Build
+    if: startsWith(github.ref_name, 'v') || github.event.inputs.version
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
@@ -47,5 +54,5 @@ jobs:
       - name: Upload APK(s)
         uses: actions/upload-artifact@v3
         with:
-          name: ${{github.ref_name}} APK(s)
+          name: ${{ github.ref_name || github.event.inputs.version }} APK(s)
           path: android/app/build/outputs/apk/**/*.apk

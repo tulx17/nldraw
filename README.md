@@ -1,5 +1,7 @@
 # Nldraw (WIP)
 
+> A native wrapper for [tldraw](https://tldraw.com)
+
 ## Description
 
 This project is a quick note-taking and sketching tool built on top of the
@@ -18,6 +20,8 @@ are currently scheduled for development.
 ## Features
 
 > WIP
+>
+> All the files are stored in the public Documents folder with the name Nldraw.
 
 - [x] Use [tldraw](https://tldraw.com) snapshot with native filesystem instead
       of localStorage.
@@ -26,15 +30,34 @@ are currently scheduled for development.
 
 > WIP
 
-![Explore](screenshots/Screenshot_20230903-180256.png)
-![Actions](screenshots/Screenshot_20230903-180305.png)
-![Draw](screenshots/Screenshot_20230903-185138.png)
+<table>
+  <tbody>
+    <tr>
+      <td>
+        <img src="screenshots/rename.png"/>
+      </td>
+      <td>
+        <img src="screenshots/remove.png"/>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <img src="screenshots/explore.png"/>
+      </td>
+      <td>
+        <img src="screenshots/draw.png"/>
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 ## Installation
 
 > WIP
+>
+> Still not ready for daily usage.
 
-### From artifact
+### From artifact (test build)
 
 #### Locally with [act](https://github.com/nektos/act)
 
@@ -43,14 +66,17 @@ git clone https://github.com/tulx17/nldraw.git && cd nldraw
 ```
 
 ```sh
-mkdir artifact
+# Feel free to change value of NLDRAW_VERSION to anything you prefer (act,local,...)
+mkdir -p act/artifact \
+  && NLDRAW_VERSION=act \
+    echo "{\"refs\":\"refs/tags/v${NLDRAW_VERSION}\"}" >> act/tag.json
 ```
 
 ```sh
-act workflow_dispatch --artifact-server-path artifact -W .github/workflows/ci.yml
+act push --eventpath act/tag.json --artifact-server-path act/artifact --workflows .github/workflows/ci.yml
 ```
 
-> APK(s) should be in the created artifact directory
+> APK(s) should be in the created act/artifact directory
 
 ### Build it your self
 
@@ -60,11 +86,12 @@ Check [Capacitor](capacitorjs.com) for more details.
 
 > WIP
 
-- [x] Create/Load/Save/Remove draws in default location.
-  - [ ] Rename draws.
+- [x] Open/Save draws in default location.
 - [ ] App configuration.
-  - [ ] Custom default location.
-  - [x] Adaptive color scheme (light,dark).
+  - [ ] ~~Custom default location.~~
+  - [x] Toggle color scheme (light,dark).
+  - [ ] Privacy screen (prevent screenshots).
+  - [ ] Biometric authentication.
 - [ ] Remove web specific features.
 - [ ] Replace attachments embedding with reference links.
   - [ ] Use custom component to render linked attachments (image,voice,...).
