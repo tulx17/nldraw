@@ -1,4 +1,4 @@
-import { Button, Stack } from "@/components";
+import { Button } from "@/components";
 import { BACK_SYMBOL, PATH_PREFERENCES } from "@/constants/primitive";
 import { joinPath } from "@/utilities/filesystem";
 import { SetOutline } from "antd-mobile-icons";
@@ -14,10 +14,7 @@ export function PreferencesButton() {
 
   return (
     <Button onClick={handleClick}>
-      <Stack>
-        <SetOutline />
-        <span>Preferences</span>
-      </Stack>
+      <SetOutline />
     </Button>
   );
 }

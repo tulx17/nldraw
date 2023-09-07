@@ -1,23 +1,10 @@
 import { List, ListItem, Switch } from "@/components";
 import { usePreferencesContext } from "@/hooks";
-import { disableDarkScheme, enableDarkScheme } from "@/utilities/darkScheme";
 import { SmileFill, SmileOutline } from "antd-mobile-icons";
-import { Fragment, useEffect } from "react";
+import { Fragment } from "react";
 
 export function Preferences() {
-  const [{ darkScheme }, preferencesDispatch] = usePreferencesContext();
-
-  useEffect(() => {
-    switch (darkScheme) {
-      case false:
-        disableDarkScheme();
-        break;
-
-      default:
-        enableDarkScheme();
-        break;
-    }
-  }, [darkScheme]);
+  const [preferences, preferencesDispatch] = usePreferencesContext();
 
   return (
     <Fragment>
@@ -27,7 +14,7 @@ export function Preferences() {
           onClick={() => preferencesDispatch({ type: "darkScheme.toggle" })}
           extra={
             <Switch
-              checked={darkScheme}
+              checked={preferences.darkScheme}
               checkedText={<SmileFill />}
               uncheckedText={<SmileOutline />}
             />
