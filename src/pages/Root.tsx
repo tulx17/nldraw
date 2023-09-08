@@ -7,9 +7,8 @@ import {
   usePreferencesContext,
 } from "@/hooks";
 import { minimizeApp } from "@/utilities/app";
-import { disableDarkScheme, enableDarkScheme } from "@/utilities/darkScheme";
+import { disableDarkMode, enableDarkMode } from "@/utilities/darkMode";
 import { joinPath, readFile, writeFile } from "@/utilities/filesystem";
-import { setStatusBarDark, setStatusBarLight } from "@/utilities/statusBar";
 import { SafeArea } from "antd-mobile";
 import { Fragment, useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
@@ -17,6 +16,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 export function Root() {
   const navigate = useNavigate();
   const [preferences, preferencesDispatch] = usePreferencesContext();
+  const matchesDark = useMediaQuery("(prefers-color-scheme: dark)");
 
   const initialized = useInit({
     async init() {
@@ -36,12 +36,42 @@ export function Root() {
     },
   });
 
-  const matchesDark = useMediaQuery("(prefers-color-scheme: dark)");
-
   useEffect(() => {
     if (!initialized) return;
 
-    switch (preferences.darkScheme) {
+    switchDark(preferences.darkMode);
+  }, [preferences]);
+
+  async function reloadPreferences() {
+    const savedPreferencesString = await readFile({
+      path: joinPath(META_DIR, PREFERENCES_FILE),
+    });
+
+    if (!savedPreferencesString) {
+      await writeFile({
+        path: joinPath(META_DIR, PREFERENCES_FILE),
+        data: JSON.stringify(DEFAULT_PREFERENCES),
+      });
+
+      switchDark(DEFAULT_PREFERENCES.darkMode);
+
+      return;
+    }
+
+    const savedPreferences = JSON.parse(savedPreferencesString);
+
+    preferencesDispatch({
+      type: "reload",
+      payload: savedPreferences,
+    });
+
+    switchDark(savedPreferences.darkMode);
+
+    return;
+  }
+
+  async function switchDark(isDark?: boolean) {
+    switch (isDark) {
       case false:
         disableDark();
         break;
@@ -61,44 +91,20 @@ export function Root() {
             break;
         }
     }
-  }, [preferences]);
-
-  async function reloadPreferences() {
-    const savedPreferences = await readFile({
-      path: joinPath(META_DIR, PREFERENCES_FILE),
-    });
-
-    if (!savedPreferences) {
-      await writeFile({
-        path: joinPath(META_DIR, PREFERENCES_FILE),
-        data: JSON.stringify(DEFAULT_PREFERENCES),
-      });
-      return;
-    }
-
-    preferencesDispatch({
-      type: "reload",
-      payload: JSON.parse(savedPreferences),
-    });
-    return;
   }
 
   async function enableDark() {
     await writeFile({
       path: joinPath(META_DIR, PREFERENCES_FILE),
-      data: JSON.stringify({ ...preferences, darkScheme: true }),
-    })
-      .then(async () => await setStatusBarDark())
-      .then(async () => await enableDarkScheme());
+      data: JSON.stringify({ ...preferences, darkMode: true }),
+    }).then(enableDarkMode);
   }
 
   async function disableDark() {
     await writeFile({
       path: joinPath(META_DIR, PREFERENCES_FILE),
-      data: JSON.stringify({ ...preferences, darkScheme: false }),
-    })
-      .then(async () => await setStatusBarLight())
-      .then(async () => await disableDarkScheme());
+      data: JSON.stringify({ ...preferences, darkMode: false }),
+    }).then(disableDarkMode);
   }
 
   return (

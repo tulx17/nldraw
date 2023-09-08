@@ -2,15 +2,15 @@ import { DEFAULT_PREFERENCES } from "@/constants/default";
 import { Dispatch, PropsWithChildren, createContext, useReducer } from "react";
 
 export type Preferences = {
-  darkScheme?: boolean;
+  darkMode: boolean;
 };
 
 type PreferencesAction =
   | { type: "reload"; payload: Preferences }
   | { type: "reset" }
-  | { type: "darkScheme.toggle" }
-  | { type: "darkScheme.enable" }
-  | { type: "darkScheme.disable" };
+  | { type: "darkMode.toggle" }
+  | { type: "darkMode.enable" }
+  | { type: "darkMode.disable" };
 
 type PreferencesProviderProps = PropsWithChildren;
 
@@ -36,12 +36,12 @@ function preferencesReducer(state: Preferences, action: PreferencesAction) {
   switch (action.type) {
     case "reload":
       return { ...action.payload };
-    case "darkScheme.toggle":
-      return { ...state, darkScheme: !state.darkScheme };
-    case "darkScheme.enable":
-      return { ...state, darkScheme: true };
-    case "darkScheme.disable":
-      return { ...state, darkScheme: false };
+    case "darkMode.toggle":
+      return { ...state, darkMode: !state.darkMode };
+    case "darkMode.enable":
+      return { ...state, darkMode: true };
+    case "darkMode.disable":
+      return { ...state, darkMode: false };
     default:
       return { ...state };
   }

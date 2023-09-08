@@ -42,7 +42,7 @@ export const statusBar = {
   getInfo: StatusBar.getInfo,
   setStyle: StatusBar.setStyle,
   setOverlay: StatusBar.setOverlaysWebView,
-  setColor: StatusBar.setBackgroundColor,
+  setBgColor: StatusBar.setBackgroundColor,
 };
 
 export const toast = {

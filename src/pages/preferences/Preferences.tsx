@@ -11,10 +11,10 @@ export function Preferences() {
       <List header={"Preferences"}>
         <ListItem
           arrow={false}
-          onClick={() => preferencesDispatch({ type: "darkScheme.toggle" })}
+          onClick={() => preferencesDispatch({ type: "darkMode.toggle" })}
           extra={
             <Switch
-              checked={preferences.darkScheme}
+              checked={preferences.darkMode}
               checkedText={<SmileFill />}
               uncheckedText={<SmileOutline />}
             />

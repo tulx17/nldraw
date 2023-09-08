@@ -1,3 +1,4 @@
+import { COLOR_BG, COLOR_BG_DARK } from "@/constants/primitive";
 import { statusBar } from "@/utilities/capacitor";
 import { Style } from "@capacitor/status-bar";
 
@@ -41,16 +42,16 @@ export async function setStatusBarOverlay() {
   await statusBar.setOverlay({ overlay: true });
 }
 
-export async function setStatusBarColor(color: string) {
-  await statusBar.setColor({ color });
+export async function setStatusBarBgColor(color: string) {
+  await statusBar.setBgColor({ color });
 }
 
 export async function setStatusBarDark() {
   await statusBar.setStyle({ style: Style.Dark });
-  await statusBar.setColor({ color: "#242424" });
+  await setStatusBarBgColor(COLOR_BG_DARK);
 }
 
 export async function setStatusBarLight() {
   await statusBar.setStyle({ style: Style.Light });
-  await statusBar.setColor({ color: "#ffffffde" });
+  await setStatusBarBgColor(COLOR_BG);
 }

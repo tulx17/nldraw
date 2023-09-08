@@ -30,3 +30,7 @@ export const PATH_ROOT = "/";
 export const PATH_EXPLORE = "explore";
 export const PATH_DRAW = "draw";
 export const PATH_PREFERENCES = "preferences";
+export const COLOR_BG = "#ffffff";
+export const COLOR_FG = "#333333";
+export const COLOR_BG_DARK = "#1a1a1a";
+export const COLOR_FG_DARK = "#e6e6e6";

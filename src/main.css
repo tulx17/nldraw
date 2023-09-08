@@ -5,8 +5,8 @@
 }
 
 :root {
-  --color: #ffffffde;
-  --bg: #242424
+  --color: #333333;
+  --bg: #ffffff;
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
@@ -21,14 +21,14 @@
 }
 
 [data-prefers-color-scheme="dark"] {
-  --color: #ffffffde;
-  --bg: #242424
+  --color: #e6e6e6;
+  --bg: #1a1a1a;
 }
 
-[data-prefers-color-scheme="light"] {
-    --color: #242424;
-    --bg: #ffffffde;
-}
+/* [data-prefers-color-scheme="light"] {
+    --color: #333333;
+    --bg: #ffffff;
+} */
 
 html, body, #root, .tldraw__editor {
   min-height: 100%;
