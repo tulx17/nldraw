@@ -10,6 +10,7 @@ export function Canvas(props: CanvasProps) {
     <div className="tldraw__editor">
       <Tldraw
         assetUrls={assets}
+        autoFocus={true}
         {...props}
       />
     </div>

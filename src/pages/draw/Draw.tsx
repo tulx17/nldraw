@@ -58,10 +58,7 @@ export function Draw() {
 
   return (
     <Fragment>
-      <Canvas
-        store={store}
-        autoFocus={true}
-      />
+      <Canvas store={store} />
     </Fragment>
   );
 }

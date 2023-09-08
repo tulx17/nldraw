@@ -182,19 +182,23 @@ export function joinFileName(...paths: Array<string | undefined>) {
 export function getParentDirectory(directory: string | undefined) {
   if (!directory) return EMPTY_STRING;
 
-  return directory
-    .split(PATH_SEPARATOR)
-    .filter(Boolean)
-    .slice(0, -1)
-    .join(PATH_SEPARATOR);
+  return getSegments(directory, 0, -1);
 }
 
 export function stripExtension(path: string) {
   return path.replace(EXTENSION_REG_INDICATOR, EMPTY_STRING);
 }
 
+export function stripPathExtension(path: string) {
+  return path.replace(/\.\w+\//g, PATH_SEPARATOR);
+}
+
 export function getSegments(path: string, start: number, end?: number) {
-  return path.split(PATH_SEPARATOR).slice(start, end).join(PATH_SEPARATOR);
+  return path
+    .split(PATH_SEPARATOR)
+    .filter(Boolean)
+    .slice(start, end)
+    .join(PATH_SEPARATOR);
 }
 
 async function isPermissionsGranted() {

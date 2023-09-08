@@ -32,6 +32,7 @@ import {
   removeDir,
   rename,
   stripExtension,
+  stripPathExtension,
 } from "@/utilities/filesystem";
 import { Toast } from "antd-mobile";
 import { FileOutline, FolderOutline, LeftOutline } from "antd-mobile-icons";
@@ -160,8 +161,7 @@ export function EntryList() {
             prefix: <LeftOutline />,
           })}
           children={
-            getSegments(directory, -4, -1).replace(/\.group/g, EMPTY_STRING) ||
-            BACK_SYMBOL
+            stripPathExtension(getSegments(directory, -4, -1)) || BACK_SYMBOL
           }
         />
         {Array.from(explore.files)
