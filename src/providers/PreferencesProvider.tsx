@@ -2,7 +2,7 @@ import { DEFAULT_PREFERENCES } from "@/constants/default";
 import { Dispatch, PropsWithChildren, createContext, useReducer } from "react";
 
 export type Preferences = {
-  darkScheme: boolean;
+  darkScheme?: boolean;
 };
 
 type PreferencesAction =

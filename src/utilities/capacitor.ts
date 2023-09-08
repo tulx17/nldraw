@@ -40,6 +40,9 @@ export const statusBar = {
   show: StatusBar.show,
   hide: StatusBar.hide,
   getInfo: StatusBar.getInfo,
+  setStyle: StatusBar.setStyle,
+  setOverlay: StatusBar.setOverlaysWebView,
+  setColor: StatusBar.setBackgroundColor,
 };
 
 export const toast = {

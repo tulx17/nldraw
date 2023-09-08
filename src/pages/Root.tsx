@@ -1,9 +1,16 @@
 import { DEFAULT_PREFERENCES } from "@/constants/default";
 import { META_DIR, PREFERENCES_FILE } from "@/constants/primitive";
-import { useInit, useNativeAppEvent, usePreferencesContext } from "@/hooks";
+import {
+  useInit,
+  useMediaQuery,
+  useNativeAppEvent,
+  usePreferencesContext,
+} from "@/hooks";
 import { minimizeApp } from "@/utilities/app";
 import { disableDarkScheme, enableDarkScheme } from "@/utilities/darkScheme";
 import { joinPath, readFile, writeFile } from "@/utilities/filesystem";
+import { setStatusBarDark, setStatusBarLight } from "@/utilities/statusBar";
+import { SafeArea } from "antd-mobile";
 import { Fragment, useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
@@ -19,32 +26,40 @@ export function Root() {
 
   useNativeAppEvent({
     backButton: ({ canGoBack }) => {
-      if (canGoBack) {
-        navigate(-1);
+      if (!canGoBack) {
+        minimizeApp();
         return;
       }
 
-      minimizeApp();
+      navigate(-1);
+      return;
     },
   });
+
+  const matchesDark = useMediaQuery("(prefers-color-scheme: dark)");
 
   useEffect(() => {
     if (!initialized) return;
 
     switch (preferences.darkScheme) {
       case false:
-        writeFile({
-          path: joinPath(META_DIR, PREFERENCES_FILE),
-          data: JSON.stringify({ ...preferences, darkScheme: false }),
-        }).then(disableDarkScheme);
+        disableDark();
+        break;
+
+      case true:
+        enableDark();
         break;
 
       default:
-        writeFile({
-          path: joinPath(META_DIR, PREFERENCES_FILE),
-          data: JSON.stringify({ ...preferences, darkScheme: true }),
-        }).then(enableDarkScheme);
-        break;
+        switch (matchesDark) {
+          case false:
+            disableDark();
+            break;
+
+          case true:
+            enableDark();
+            break;
+        }
     }
   }, [preferences]);
 
@@ -68,9 +83,29 @@ export function Root() {
     return;
   }
 
+  async function enableDark() {
+    await writeFile({
+      path: joinPath(META_DIR, PREFERENCES_FILE),
+      data: JSON.stringify({ ...preferences, darkScheme: true }),
+    })
+      .then(async () => await setStatusBarDark())
+      .then(async () => await enableDarkScheme());
+  }
+
+  async function disableDark() {
+    await writeFile({
+      path: joinPath(META_DIR, PREFERENCES_FILE),
+      data: JSON.stringify({ ...preferences, darkScheme: false }),
+    })
+      .then(async () => await setStatusBarLight())
+      .then(async () => await disableDarkScheme());
+  }
+
   return (
     <Fragment>
+      <SafeArea position="top" />
       <Outlet />
+      <SafeArea position="bottom" />
     </Fragment>
   );
 }

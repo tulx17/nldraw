@@ -1,7 +1,7 @@
 import { Explore, Preferences } from "@/providers";
 
 export const DEFAULT_PREFERENCES = {
-  darkScheme: true,
+  darkScheme: undefined,
 } as Preferences;
 
 export const DEFAULT_EXPLORE = {

@@ -12,11 +12,7 @@ export function toggleDarkScheme(isDark?: boolean) {
       disableDarkScheme();
       break;
 
-    // case false:
-    //   enableDarkMode();
-    //   break;
-
-    default:
+    case false:
       enableDarkScheme();
       break;
   }
