@@ -72,11 +72,7 @@ export function Draw() {
     <Fragment>
       <Canvas
         store={store}
-        onMount={(editor) => {
-          editor.zoomToFit();
-          editor.setCurrentTool("hand");
-          onMount(editor);
-        }}
+        onMount={onMount}
         overrides={{
           actions: actionsOverrides,
           actionsMenu: actionsMenuOverrides,
