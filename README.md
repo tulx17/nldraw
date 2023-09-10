@@ -54,12 +54,8 @@ are currently scheduled for development.
 ## Installation
 
 > WIP
->
-> Still not ready for daily usage.
 
 ### From [Releases](https://github.com/tulx17/nldraw/releases)
-
-### From [Artifact](https://github.com/tulx17/nldraw/actions/workflows/ci.yml) (test build)
 
 ### Build it your self
 
