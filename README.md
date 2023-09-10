@@ -75,13 +75,18 @@ Check [Capacitor](capacitorjs.com) for more details.
   - [x] Toggle color scheme (light,dark).
   - [ ] ~~Privacy screen (prevent screenshots).~~
   - [ ] ~~Biometric authentication.~~
-- [ ] Remove web specific features.
-- [ ] Replace attachments embedding with reference links.
-  - [ ] Use custom component to render linked attachments (image,voice,...).
+  - [ ] Default behavior for [tldraw](https://tldraw.com).
+- [ ] Modify web specific features of [tldraw](https://tldraw.com).
+  - [x] Remove native incompatible features.
+  - [ ] Re-implement removed features.
+- [ ] ~~Replace attachments embedding with reference links.~~ (broke tldraw format)
+- [ ] Use custom component to render linked attachments (image,voice,...).
 - [ ] Apply template from existing draws.
-- [ ] Support tags and filter based on tags.
-- [ ] Update notification.
-- [ ] IOS support (no promised).
+- [ ] Support filter draws or groups
+  - [ ] Search using tags.
+  - [ ] Search text inside draws.
+- [ ] ~~Update notification.~~
+- [ ] ~~IOS support (no promised).~~
 
 ## Core Libraries
 
