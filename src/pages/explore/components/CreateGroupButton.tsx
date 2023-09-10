@@ -14,7 +14,7 @@ import {
   readDir,
 } from "@/utilities/filesystem";
 import { Toast } from "antd-mobile";
-import { FileOutline } from "antd-mobile-icons";
+import { AddSquareOutline } from "antd-mobile-icons";
 import { format } from "date-fns";
 import { Fragment, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -70,8 +70,8 @@ export function CreateGroupButton() {
         onClick={handleClick}
       >
         <Stack>
-          <FileOutline />
-          <span>Add Group</span>
+          <AddSquareOutline />
+          <span>Group</span>
         </Stack>
       </Button>
       <Popup

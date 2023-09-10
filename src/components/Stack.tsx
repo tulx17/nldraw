@@ -2,11 +2,12 @@ import { Space as AntDSpace, SpaceProps as AntDSpaceProps } from "antd-mobile";
 
 type StackProps = AntDSpaceProps;
 
-export function Stack(props: StackProps) {
+export function Stack({ style, ...otherProps }: StackProps) {
   return (
     <AntDSpace
       wrap={true}
-      {...props}
+      style={{ width: "100%", ...style }}
+      {...otherProps}
     />
   );
 }

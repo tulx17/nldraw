@@ -6,6 +6,7 @@ import {
   List,
   ListItem,
   Popup,
+  PullRefresh,
   Swipe,
 } from "@/components";
 import {
@@ -151,70 +152,72 @@ export function EntryList() {
 
   return (
     <Fragment>
-      <List>
-        <ListItem
-          arrow={false}
-          disabled={true}
-          {...(!!directory && {
-            disabled: false,
-            onClick: handleNavigateBack,
-            prefix: <LeftOutline />,
-          })}
-          children={
-            stripPathExtension(getSegments(directory, -4, -1)) || BACK_SYMBOL
-          }
-        />
-        {Array.from(explore.files)
-          .filter((directory) => directory.name !== META_DIR)
-          .map((entry) => {
-            const isGroup = GROUP_REG_INDICATOR.test(entry.name);
-            const isDraw = DRAW_REG_INDICATOR.test(entry.name);
+      <PullRefresh onRefresh={refreshFiles}>
+        <List>
+          <ListItem
+            arrow={false}
+            disabled={true}
+            {...(!!directory && {
+              disabled: false,
+              onClick: handleNavigateBack,
+              prefix: <LeftOutline />,
+            })}
+            children={
+              stripPathExtension(getSegments(directory, -4, -1)) || BACK_SYMBOL
+            }
+          />
+          {Array.from(explore.files)
+            .filter((directory) => directory.name !== META_DIR)
+            .map((entry) => {
+              const isGroup = GROUP_REG_INDICATOR.test(entry.name);
+              const isDraw = DRAW_REG_INDICATOR.test(entry.name);
 
-            return (
-              <Swipe
-                key={entry.uri}
-                leftActions={[
-                  {
-                    key: "rename",
-                    text: "Rename",
-                    color: "primary",
-                    onClick() {
-                      handleRenameAction(entry.name);
+              return (
+                <Swipe
+                  key={entry.uri}
+                  leftActions={[
+                    {
+                      key: "rename",
+                      text: "Rename",
+                      color: "primary",
+                      onClick() {
+                        handleRenameAction(entry.name);
+                      },
                     },
-                  },
-                ]}
-                rightActions={[
-                  {
-                    key: "remove",
-                    text: "Remove",
-                    color: "danger",
-                    onClick() {
-                      handleRemoveAction(entry.name);
+                  ]}
+                  rightActions={[
+                    {
+                      key: "remove",
+                      text: "Remove",
+                      color: "danger",
+                      onClick() {
+                        handleRemoveAction(entry.name);
+                      },
                     },
-                  },
-                ]}
-              >
-                <ListItem
-                  children={entry.name}
-                  description={format(entry.mtime, DATE_TIME_FORMAT)}
-                  {...(isGroup
-                    ? {
-                        arrow: true,
-                        prefix: <FolderOutline />,
-                        onClick: () => handleNavigateGroup(entry.name),
-                      }
-                    : isDraw
-                    ? {
-                        arrow: false,
-                        prefix: <FileOutline />,
-                        onClick: () => handleNavigateDraw(entry.name),
-                      }
-                    : EMPTY_OBJECT)}
-                />
-              </Swipe>
-            );
-          })}
-      </List>
+                  ]}
+                >
+                  <ListItem
+                    children={entry.name}
+                    description={format(entry.mtime, DATE_TIME_FORMAT)}
+                    {...(isGroup
+                      ? {
+                          arrow: true,
+                          prefix: <FolderOutline fontSize={32} />,
+                          onClick: () => handleNavigateGroup(entry.name),
+                        }
+                      : isDraw
+                      ? {
+                          arrow: false,
+                          prefix: <FileOutline fontSize={32} />,
+                          onClick: () => handleNavigateDraw(entry.name),
+                        }
+                      : EMPTY_OBJECT)}
+                  />
+                </Swipe>
+              );
+            })}
+        </List>
+      </PullRefresh>
       <Popup
         position={"top"}
         visible={updateVisible}

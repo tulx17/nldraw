@@ -14,6 +14,7 @@ import {
   toolbarOverrides,
   toolsOverrides,
 } from "@/pages/draw/Draw.module";
+import { hideStatusBar, showStatusBar } from "@/utilities/statusBar";
 import { TLStore, createTLStore, defaultShapeUtils } from "@tldraw/tldraw";
 import { Toast } from "antd-mobile";
 import { Fragment, useState } from "react";
@@ -37,6 +38,8 @@ export function Draw() {
 
   useInit({
     async init() {
+      await hideStatusBar();
+
       const snapshot = await loadSnapshot({ path, store });
 
       if (!snapshot) {
@@ -65,6 +68,7 @@ export function Draw() {
       Toast.show({
         content: ["Saved draw to", path].join(SPACE_SEPARATOR),
       });
+      await showStatusBar();
     },
   });
 

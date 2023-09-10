@@ -1,8 +1,8 @@
 import { Button, Form, FormItem, Input, Popup, Stack } from "@/components";
+import { DEFAULT_STORE } from "@/constants/default";
 import {
   DRAW_FILE,
   DRAW_SUFFIX,
-  EMPTY_OBJECT,
   EMPTY_STRING,
   GROUP_REG_INDICATOR,
   JOINT_DATE_TIME_FORMAT,
@@ -16,7 +16,7 @@ import {
   writeFile,
 } from "@/utilities/filesystem";
 import { Toast } from "antd-mobile";
-import { FileOutline } from "antd-mobile-icons";
+import { AddCircleOutline } from "antd-mobile-icons";
 import { format } from "date-fns";
 import { Fragment, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -40,7 +40,7 @@ export function CreateDrawButton() {
     const { name } = form.getFieldsValue();
     const result = await writeFile({
       path: joinPath(directory, joinFileName(name, DRAW_SUFFIX), DRAW_FILE),
-      data: JSON.stringify(EMPTY_OBJECT),
+      data: JSON.stringify(DEFAULT_STORE.getSnapshot()),
     });
 
     if (!result) {
@@ -70,14 +70,17 @@ export function CreateDrawButton() {
   return (
     <Fragment>
       <Button
-        disabled={Array.from(explore.files).some((file) =>
-          GROUP_REG_INDICATOR.test(file.name)
-        )}
+        disabled={
+          !directory ||
+          Array.from(explore.files).some((file) =>
+            GROUP_REG_INDICATOR.test(file.name)
+          )
+        }
         onClick={handleClick}
       >
         <Stack>
-          <FileOutline />
-          <span>Add Draw</span>
+          <AddCircleOutline />
+          <span>Draw</span>
         </Stack>
       </Button>
       <Popup

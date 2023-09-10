@@ -1,6 +1,5 @@
 import { List, ListItem, Switch } from "@/components";
 import { usePreferencesContext } from "@/hooks";
-import { SmileFill, SmileOutline } from "antd-mobile-icons";
 import { Fragment } from "react";
 
 export function Preferences() {
@@ -12,15 +11,9 @@ export function Preferences() {
         <ListItem
           arrow={false}
           onClick={() => preferencesDispatch({ type: "darkMode.toggle" })}
-          extra={
-            <Switch
-              checked={preferences.darkMode}
-              checkedText={<SmileFill />}
-              uncheckedText={<SmileOutline />}
-            />
-          }
+          extra={<Switch checked={preferences.darkMode} />}
         >
-          Color scheme
+          Dark mode
         </ListItem>
       </List>
     </Fragment>

@@ -4,7 +4,6 @@ import {
   CreateGroupButton,
   EntryList,
   PreferencesButton,
-  RefreshButton,
 } from "@/pages/explore/components";
 import { ExploreProvider } from "@/providers";
 import { Fragment } from "react";
@@ -13,17 +12,17 @@ export function Explore() {
   return (
     <Fragment>
       <ExploreProvider>
-        <Stack
-          justify={"end"}
-          align={"center"}
-          style={{ width: "100%" }}
-        >
-          <RefreshButton />
-          <CreateDrawButton />
-          <CreateGroupButton />
-          <PreferencesButton />
+        <Stack direction={"vertical"}>
+          <Stack
+            justify={"end"}
+            align={"center"}
+          >
+            <CreateDrawButton />
+            <CreateGroupButton />
+            <PreferencesButton />
+          </Stack>
+          <EntryList />
         </Stack>
-        <EntryList />
       </ExploreProvider>
     </Fragment>
   );

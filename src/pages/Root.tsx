@@ -1,13 +1,9 @@
+import { Loading } from "@/components";
 import { DEFAULT_PREFERENCES } from "@/constants/default";
 import { META_DIR, PREFERENCES_FILE } from "@/constants/primitive";
-import {
-  useInit,
-  useMediaQuery,
-  useNativeAppEvent,
-  usePreferencesContext,
-} from "@/hooks";
+import { useInit, useNativeAppEvent, usePreferencesContext } from "@/hooks";
+import { switchDark } from "@/pages/Root.module";
 import { minimizeApp } from "@/utilities/app";
-import { disableDarkMode, enableDarkMode } from "@/utilities/darkMode";
 import { joinPath, readFile, writeFile } from "@/utilities/filesystem";
 import { SafeArea } from "antd-mobile";
 import { Fragment, useEffect } from "react";
@@ -16,7 +12,6 @@ import { Outlet, useNavigate } from "react-router-dom";
 export function Root() {
   const navigate = useNavigate();
   const [preferences, preferencesDispatch] = usePreferencesContext();
-  const matchesDark = useMediaQuery("(prefers-color-scheme: dark)");
 
   const initialized = useInit({
     async init() {
@@ -39,7 +34,7 @@ export function Root() {
   useEffect(() => {
     if (!initialized) return;
 
-    switchDark(preferences.darkMode);
+    switchDark(preferences);
   }, [preferences]);
 
   async function reloadPreferences() {
@@ -53,7 +48,7 @@ export function Root() {
         data: JSON.stringify(DEFAULT_PREFERENCES),
       });
 
-      switchDark(DEFAULT_PREFERENCES.darkMode);
+      switchDark(DEFAULT_PREFERENCES);
 
       return;
     }
@@ -65,47 +60,12 @@ export function Root() {
       payload: savedPreferences,
     });
 
-    switchDark(savedPreferences.darkMode);
+    switchDark(savedPreferences);
 
     return;
   }
 
-  async function switchDark(isDark?: boolean) {
-    switch (isDark) {
-      case false:
-        disableDark();
-        break;
-
-      case true:
-        enableDark();
-        break;
-
-      default:
-        switch (matchesDark) {
-          case false:
-            disableDark();
-            break;
-
-          case true:
-            enableDark();
-            break;
-        }
-    }
-  }
-
-  async function enableDark() {
-    await writeFile({
-      path: joinPath(META_DIR, PREFERENCES_FILE),
-      data: JSON.stringify({ ...preferences, darkMode: true }),
-    }).then(enableDarkMode);
-  }
-
-  async function disableDark() {
-    await writeFile({
-      path: joinPath(META_DIR, PREFERENCES_FILE),
-      data: JSON.stringify({ ...preferences, darkMode: false }),
-    }).then(disableDarkMode);
-  }
+  if (!initialized) return <Loading />;
 
   return (
     <Fragment>
