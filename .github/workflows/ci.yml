@@ -3,17 +3,21 @@ on:
   push:
     tags:
       - v[0-9].[0-9]+.[0-9]+
+
   workflow_dispatch:
     inputs:
       description:
         required: true
-        description: Description for this manual dispatch
+        description: A short description for this manual dispatch
         type: string
+
+env:
+  APK_FILE: ${{ inputs.description || github.ref_name }}.apk
 
 jobs:
   build:
     name: Build
-    if: startsWith(github.ref_name, 'v') || inputs.description
+    if: inputs.description || github.ref_type == 'tag'
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
@@ -63,8 +67,17 @@ jobs:
           alias: ${{ secrets.ANDROID_KEY_ALIAS }}
           keyStorePassword: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
 
-      - name: Upload APK(s)
+      - name: Move and rename signed APK
+        run: cp ${{ steps.sign_release.outputs.signedReleaseFile }} ${{ env.APK_FILE }}
+
+      - name: Upload APK
         uses: actions/upload-artifact@v3
         with:
-          name: Signed ${{ github.ref_name || inputs.description }} APK
-          path: ${{ steps.sign_release.outputs.signedReleaseFile }}
+          name: Signed ${{ env.APK_FILE }}
+          path: ${{ env.APK_FILE }}
+
+      - name: Release ${{ github.ref_name }}
+        if: github.ref_type == 'tag'
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ${{ env.APK_FILE }}
