@@ -38,6 +38,7 @@ jobs:
 
       - name: Prepare dist
         run: mkdir dist && touch dist/index.html
+        continue-on-error: true
 
       - name: Setup JDK 17
         uses: actions/setup-java@v3
