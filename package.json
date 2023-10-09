@@ -33,7 +33,7 @@
     "react-router-dom": "^6.15.0"
   },
   "devDependencies": {
-    "@capacitor/assets": "^2.0.4",
+    "@capacitor/assets": "^3.0.1",
     "@capacitor/cli": "^5.3.0",
     "@trapezedev/configure": "^7.0.10",
     "@types/react": "^18.2.15",
