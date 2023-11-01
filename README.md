@@ -59,7 +59,7 @@ are currently scheduled for development.
 
 ### Build it your self
 
-Check [Capacitor](capacitorjs.com) for more details.
+Check [Capacitor](https://capacitorjs.com) for more details.
 
 ## Roadmap
 
