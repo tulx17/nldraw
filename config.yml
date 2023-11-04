@@ -41,10 +41,3 @@ platforms:
             <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
             <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="29" />
           </manifest>
-
-      - file: AndroidManifest.xml
-        target: manifest
-        merge: |
-          <manifest>
-            <uses-sdk tools:overrideLibrary="com.google.zxing.client.android" />
-          </manifest>

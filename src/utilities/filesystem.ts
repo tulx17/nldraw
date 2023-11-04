@@ -17,7 +17,7 @@ export async function createDir(params: { path?: string }) {
 
   const target = await validatePath({ path });
 
-  if (!!target) return target;
+  if (target) return target;
 
   const newPath = joinPath(WORK_DIR, path);
 

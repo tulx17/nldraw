@@ -12,6 +12,14 @@ const config = {
   ignorePatterns: ["dist", ".eslintrc.cjs"],
   parser: "@typescript-eslint/parser",
   plugins: ["react-refresh"],
+  parserOptions: {
+    project: true
+  },
+  settings: {
+    react: {
+      version: "detect"
+    }
+  },
   rules: {
     "react-refresh/only-export-components": [
       "warn",

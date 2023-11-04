@@ -15,7 +15,7 @@ export async function hideStatusBar() {
 
   if (!visible) return;
 
-  statusBar.hide();
+  void statusBar.hide().catch();
 }
 
 export async function toggleStatusBar() {
@@ -43,15 +43,15 @@ export async function setStatusBarOverlay() {
 }
 
 export async function setStatusBarBgColor(color: string) {
-  await statusBar.setBgColor({ color });
+  await statusBar.setBgColor({ color }).catch();
 }
 
 export async function setStatusBarDark() {
-  await statusBar.setStyle({ style: Style.Dark });
-  await setStatusBarBgColor(COLOR_BG_DARK);
+  await statusBar.setStyle({ style: Style.Dark }).catch();
+  await setStatusBarBgColor(COLOR_BG_DARK).catch();
 }
 
 export async function setStatusBarLight() {
-  await statusBar.setStyle({ style: Style.Light });
-  await setStatusBarBgColor(COLOR_BG);
+  await statusBar.setStyle({ style: Style.Light }).catch();
+  await setStatusBarBgColor(COLOR_BG).catch();
 }

@@ -1,0 +1,1 @@
+export const ENV_DEV = import.meta.env.DEV

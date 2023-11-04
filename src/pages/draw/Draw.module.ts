@@ -2,6 +2,8 @@ import { EMPTY_ARRAY } from "@/constants/primitive";
 import { readFile, writeFile } from "@/utilities/filesystem";
 import {
   Editor,
+  StoreSnapshot,
+  TLRecord,
   TLStore,
   TLUiActionsContextType,
   TLUiMenuGroup,
@@ -17,7 +19,7 @@ export async function loadSnapshot(params: { path: string; store: TLStore }) {
 
   if (!jsonSnapshot) return;
 
-  const snapshot = JSON.parse(jsonSnapshot);
+  const snapshot = JSON.parse(jsonSnapshot) as StoreSnapshot<TLRecord>;
 
   // const store = createTLStore({ shapeUtils: defaultShapeUtils });
 
@@ -125,8 +127,8 @@ export function actionsMenuOverrides(_editor: Editor, schema: TLUiMenuSchema) {
 }
 
 export function keyboardShortcutsMenuOverrides(
-  _editor: Editor,
-  _schema: TLUiMenuSchema
+  // _editor: Editor,
+  // _schema: TLUiMenuSchema
 ) {
   return EMPTY_ARRAY;
 }

@@ -37,7 +37,7 @@ export function CreateDrawButton() {
   }
 
   async function handleSubmit() {
-    const { name } = form.getFieldsValue();
+    const { name } = form.getFieldsValue() as Record<string,string>;
     const result = await writeFile({
       path: joinPath(directory, joinFileName(name, DRAW_SUFFIX), DRAW_FILE),
       data: JSON.stringify(DEFAULT_STORE.getSnapshot()),

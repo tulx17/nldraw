@@ -1,15 +1,16 @@
+import { ENV_DEV } from "@/constants/env";
 import { getAssetUrlsByMetaUrl } from "@tldraw/assets/urls";
 import { Tldraw } from "@tldraw/tldraw";
 
 type CanvasProps = Parameters<typeof Tldraw>[0];
 
-const assets = getAssetUrlsByMetaUrl();
-
 export function Canvas(props: CanvasProps) {
   return (
     <div className="tldraw__editor">
       <Tldraw
-        assetUrls={assets}
+        {...(!ENV_DEV ? {
+          assetUrls: getAssetUrlsByMetaUrl()
+        }: {})}
         autoFocus={true}
         {...props}
       />

@@ -17,7 +17,7 @@ export function useNativeAppEvent(params: UseNativeAppEventParams) {
     Object.entries(params).forEach(async ([name, handler]) => {
       const listener = await app.addListener(
         name as ListenerEventParams[0],
-        handler as ListenerEventParams[1]
+        handler 
       );
 
       listenedEvents.push(listener);
