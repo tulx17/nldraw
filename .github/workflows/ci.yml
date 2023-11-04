@@ -23,7 +23,7 @@ env:
 jobs:
   build:
     name: Build
-    if: inputs.description || github.ref_type == 'tag'
+    # if: inputs.description || github.ref_type == 'tag'
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout
