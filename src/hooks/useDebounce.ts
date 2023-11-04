@@ -19,7 +19,7 @@ export function useDebounce<T>(params: {
     return () => {
       clearTimeout(timeout);
     };
-  }, [value, delay]);
+  }, [value, delay, callback]);
 
   return [[value, debouncedValue], setValue] as [[T, T], Dispatch<T>];
 }

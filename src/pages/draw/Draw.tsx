@@ -23,19 +23,13 @@ export function Draw() {
   const navigate = useNavigate();
   const { path = EMPTY_STRING } = useParams();
 
-  if (!path) {
-    Toast.show({ content: "Draw not found" });
-    navigate(-1);
-    return;
-  }
-
   const [store] = useState<TLStore>(
     createTLStore({
       shapeUtils: defaultShapeUtils,
     })
   );
 
-  useInit({
+  const initialized = useInit({
     async init() {
       const snapshot = await loadSnapshot({ path, store });
 
@@ -67,6 +61,12 @@ export function Draw() {
       });
     },
   });
+
+  if (!path || !initialized) {
+    Toast.show({ content: "Initialization failed" });
+    navigate(-1);
+    return;
+  }
 
   return (
     <Fragment>

@@ -9,10 +9,10 @@ export function useInit({ init, cleanup = () => {} }: UseInitParams) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    Promise.resolve(init()).then(() => setMounted(true));
+    void Promise.resolve(init()).then(() => setMounted(true)).catch();
 
     return () => {
-      Promise.resolve(cleanup()).then(() => setMounted(false));
+      void Promise.resolve(cleanup()).then(() => setMounted(false)).catch();
     };
   }, []);
 

@@ -3,6 +3,7 @@ import { DEFAULT_PREFERENCES } from "@/constants/default";
 import { META_DIR, PREFERENCES_FILE } from "@/constants/primitive";
 import { useInit, useNativeAppEvent, usePreferencesContext } from "@/hooks";
 import { switchDark } from "@/pages/Root.module";
+import { Preferences } from "@/providers";
 import { minimizeApp } from "@/utilities/app";
 import { joinPath, readFile, writeFile } from "@/utilities/filesystem";
 import { SafeArea } from "antd-mobile";
@@ -22,7 +23,7 @@ export function Root() {
   useNativeAppEvent({
     backButton: ({ canGoBack }) => {
       if (!canGoBack) {
-        minimizeApp();
+        void minimizeApp();
         return;
       }
 
@@ -34,33 +35,31 @@ export function Root() {
   useEffect(() => {
     if (!initialized) return;
 
-    switchDark(preferences);
-  }, [preferences]);
+    void switchDark(preferences).catch();
+  }, [initialized, preferences]);
 
   async function reloadPreferences() {
-    const savedPreferencesString = await readFile({
+    let savedPreferencesString = await readFile({
       path: joinPath(META_DIR, PREFERENCES_FILE),
     });
 
     if (!savedPreferencesString) {
+      savedPreferencesString = JSON.stringify(DEFAULT_PREFERENCES);
+
       await writeFile({
         path: joinPath(META_DIR, PREFERENCES_FILE),
-        data: JSON.stringify(DEFAULT_PREFERENCES),
+        data: savedPreferencesString,
       });
-
-      switchDark(DEFAULT_PREFERENCES);
-
-      return;
     }
 
-    const savedPreferences = JSON.parse(savedPreferencesString);
+    const savedPreferences = JSON.parse(savedPreferencesString) as Preferences;
 
     preferencesDispatch({
       type: "reload",
       payload: savedPreferences,
     });
 
-    switchDark(savedPreferences);
+    void switchDark(savedPreferences);
 
     return;
   }
@@ -69,9 +68,13 @@ export function Root() {
 
   return (
     <Fragment>
-      <SafeArea position="top" />
+      <div style={{ background: "var(--bg)" }}>
+        <SafeArea position="top" />
+      </div>
       <Outlet />
-      <SafeArea position="bottom" />
+      <div style={{ background: "var(--bg)" }}>
+        <SafeArea position="bottom" />
+      </div>
     </Fragment>
   );
 }

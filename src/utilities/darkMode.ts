@@ -1,15 +1,13 @@
 import { setStatusBarDark, setStatusBarLight } from "@/utilities/statusBar";
 
 export function enableDarkMode() {
-  void setStatusBarDark().then(() =>
-    document.documentElement.setAttribute("data-prefers-color-scheme", "dark")
-  ).catch();
+  void setStatusBarDark().catch();
+  document.documentElement.setAttribute("data-prefers-color-scheme", "dark")
 }
 
 export function disableDarkMode() {
-  void setStatusBarLight().then(() =>
-    document.documentElement.setAttribute("data-prefers-color-scheme", "light")
-  ).catch();
+  void setStatusBarLight().catch();
+  document.documentElement.setAttribute("data-prefers-color-scheme", "light")
 }
 
 export function toggleDarkMode(isDark?: boolean) {

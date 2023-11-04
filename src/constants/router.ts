@@ -8,28 +8,23 @@ import { Navigate, createBrowserRouter } from "react-router-dom";
 
 export const ROUTER = createBrowserRouter([
   {
-    element: <Root />,
+    Component: Root,
     children: [
       {
         index: true,
-        element: (
-          <Navigate
-            to={PATH_EXPLORE}
-            replace={true}
-          />
-        ),
+        Component: () => Navigate({ to: PATH_EXPLORE, replace: true })
       },
       {
         path: `${PATH_EXPLORE}/*`,
-        element: <Explore />,
+        Component: Explore
       },
       {
         path: PATH_PREFERENCES,
-        element: <Preferences />,
+        Component: Preferences
       },
       {
         path: `${PATH_DRAW}/:path`,
-        element: <Draw />,
+        Component: Draw
       },
     ],
   },

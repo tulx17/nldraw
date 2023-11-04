@@ -49,10 +49,10 @@ export function EntryList() {
   const [renameForm] = useForm();
 
   useEffect(() => {
-    refreshFiles();
+    void refreshFiles();
   }, [directory]);
 
-  async function handleNavigateGroup(name: string) {
+  function handleNavigateGroup(name: string) {
     navigate(joinPath(directory, name));
     return;
   }
@@ -68,7 +68,7 @@ export function EntryList() {
     return;
   }
 
-  async function handleNavigateBack() {
+  function handleNavigateBack() {
     navigate(getParentDirectory(directory));
     return;
   }
@@ -79,7 +79,7 @@ export function EntryList() {
   }
 
   async function handleRenameSubmit() {
-    const { oldName, newName } = renameForm.getFieldsValue();
+    const { oldName, newName } = renameForm.getFieldsValue() as Record<string,string>;
     const oldPath = joinPath(directory, oldName);
 
     const isGroup = GROUP_REG_INDICATOR.test(oldName);
@@ -162,10 +162,9 @@ export function EntryList() {
               onClick: handleNavigateBack,
               prefix: <LeftOutline />,
             })}
-            children={
-              stripPathExtension(getSegments(directory, -4, -1)) || BACK_SYMBOL
-            }
-          />
+            >
+            {stripPathExtension(getSegments(directory, -4, -1)) || BACK_SYMBOL}
+          </ListItem>
           {Array.from(explore.files)
             .filter((directory) => directory.name !== META_DIR)
             .map((entry) => {
@@ -191,13 +190,12 @@ export function EntryList() {
                       text: "Remove",
                       color: "danger",
                       onClick() {
-                        handleRemoveAction(entry.name);
+                        void handleRemoveAction(entry.name).catch();
                       },
                     },
                   ]}
                 >
                   <ListItem
-                    children={entry.name}
                     description={format(entry.mtime, DATE_TIME_FORMAT)}
                     {...(isGroup
                       ? {
@@ -212,7 +210,9 @@ export function EntryList() {
                           onClick: () => handleNavigateDraw(entry.name),
                         }
                       : EMPTY_OBJECT)}
-                  />
+                  >
+                    {entry.name}
+                  </ListItem>
                 </Swipe>
               );
             })}

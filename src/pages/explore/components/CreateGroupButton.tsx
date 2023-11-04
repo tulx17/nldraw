@@ -35,7 +35,7 @@ export function CreateGroupButton() {
   }
 
   async function handleSubmit() {
-    const { name } = form.getFieldsValue();
+    const { name } = form.getFieldsValue() as Record<string,string>;
     const result = await createDir({
       path: joinPath(directory, joinFileName(name, GROUP_SUFFIX)),
     });
