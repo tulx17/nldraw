@@ -4,12 +4,12 @@ vars:
   APP_NAME:
     default: Nldraw
   VERSION_NAME:
-    default: "0.0.1"
+    default: "0.0.2"
     type: string
   VERSION_NAME_SUFFIX:
-    default:
+    default: -dev
   VERSION_CODE:
-    default: 1
+    default: 2
     type: number
   INCREMENTAL_VERSION_CODE:
     default: true
