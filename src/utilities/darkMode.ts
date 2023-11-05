@@ -1,23 +1,23 @@
 import { setStatusBarDark, setStatusBarLight } from "@/utilities/statusBar";
 
-export function enableDarkMode() {
-  void setStatusBarDark().catch();
+export async function enableDarkMode() {
+  await setStatusBarDark().catch();
   document.documentElement.setAttribute("data-prefers-color-scheme", "dark")
 }
 
-export function disableDarkMode() {
-  void setStatusBarLight().catch();
+export async function disableDarkMode() {
+  await setStatusBarLight().catch();
   document.documentElement.setAttribute("data-prefers-color-scheme", "light")
 }
 
 export function toggleDarkMode(isDark?: boolean) {
   switch (isDark) {
     case true:
-      disableDarkMode();
+      void disableDarkMode().catch();
       break;
 
     case false:
-      enableDarkMode();
+      void enableDarkMode().catch();
       break;
   }
 }

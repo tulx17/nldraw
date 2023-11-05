@@ -30,7 +30,14 @@
     --bg: #ffffff;
 } */
 
-html, body, #root, .tldraw__editor {
+html,
+body,
+#root {
   min-height: 100%;
   height: 100%;
+}
+
+.tldraw__editor {
+  position: absolute;
+  inset: 0;
 }

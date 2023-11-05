@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/unbound-method */
+
 // import { BiometricAuth } from "@aparajita/capacitor-biometric-auth";
 // import { BarcodeScanner } from "@capacitor-community/barcode-scanner";
 // import { KeepAwake } from "@capacitor-community/keep-awake";

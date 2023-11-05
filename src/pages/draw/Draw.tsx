@@ -1,6 +1,6 @@
 import { Canvas } from "@/components";
 import { EMPTY_STRING, SPACE_SEPARATOR } from "@/constants/primitive";
-import { useInit } from "@/hooks";
+import { useInit, usePreferencesContext } from "@/hooks";
 import {
   actionsMenuOverrides,
   actionsOverrides,
@@ -14,7 +14,7 @@ import {
   toolbarOverrides,
   toolsOverrides,
 } from "@/pages/draw/Draw.module";
-import { TLStore, createTLStore, defaultShapeUtils } from "@tldraw/tldraw";
+import { Editor, TLStore, createTLStore, defaultShapeUtils } from "@tldraw/tldraw";
 import { Toast } from "antd-mobile";
 import { Fragment, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -22,6 +22,8 @@ import { useNavigate, useParams } from "react-router-dom";
 export function Draw() {
   const navigate = useNavigate();
   const { path = EMPTY_STRING } = useParams();
+
+  const [preferences] = usePreferencesContext();
 
   const [store] = useState<TLStore>(
     createTLStore({
@@ -62,6 +64,20 @@ export function Draw() {
     },
   });
 
+  function applyPreferences(editor: Editor) {
+    editor.user.updateUserPreferences({
+      isDarkMode: preferences.drawDarkMode,
+      isSnapMode: preferences.drawSnapShape,
+    });
+
+    editor.updateInstanceState({
+      isPenMode: preferences.drawPenOnly,
+      isGridMode: preferences.drawGridBackground,
+      isToolLocked: preferences.drawToolLocked,
+      isFocusMode: preferences.drawFocused
+    });
+  }
+
   if (!path || !initialized) {
     Toast.show({ content: "Initialization failed" });
     navigate(-1);
@@ -72,7 +88,7 @@ export function Draw() {
     <Fragment>
       <Canvas
         store={store}
-        onMount={onMount}
+        onMount={(editor) => onMount(editor, applyPreferences)}
         overrides={{
           actions: actionsOverrides,
           actionsMenu: actionsMenuOverrides,

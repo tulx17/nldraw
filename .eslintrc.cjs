@@ -21,6 +21,7 @@ const config = {
     }
   },
   rules: {
+    "no-unused-vars": "off",
     "react-refresh/only-export-components": [
       "warn",
       { allowConstantExport: true },

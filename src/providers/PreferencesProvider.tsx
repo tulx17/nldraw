@@ -3,14 +3,25 @@ import { Dispatch, PropsWithChildren, createContext, useReducer } from "react";
 
 export type Preferences = {
   darkMode: boolean;
+  drawDarkMode: boolean;
+  drawSnapShape: boolean;
+  drawGridBackground: boolean;
+  drawPenOnly: boolean;
+  drawToolLocked: boolean;
+  drawFocused: boolean;
 };
 
 type PreferencesAction =
   | { type: "reload"; payload: Preferences }
   | { type: "reset" }
   | { type: "darkMode.toggle" }
-  | { type: "darkMode.enable" }
-  | { type: "darkMode.disable" };
+  | { type: "draw.darkMode.toggle" }
+  | { type: "draw.snapShape.toggle" }
+  | { type: "draw.gridBackground.toggle" }
+  | { type: "draw.penOnly.toggle" }
+  | { type: "draw.toolLocked.toggle" }
+  | { type: "draw.focused.toggle" };
+
 
 type PreferencesProviderProps = PropsWithChildren;
 
@@ -38,10 +49,18 @@ function preferencesReducer(state: Preferences, action: PreferencesAction) {
       return { ...action.payload };
     case "darkMode.toggle":
       return { ...state, darkMode: !state.darkMode };
-    case "darkMode.enable":
-      return { ...state, darkMode: true };
-    case "darkMode.disable":
-      return { ...state, darkMode: false };
+    case "draw.darkMode.toggle":
+      return { ...state, drawDarkMode: !state.drawDarkMode };
+    case "draw.gridBackground.toggle":
+      return { ...state, drawGridBackground: !state.drawGridBackground };
+    case "draw.penOnly.toggle":
+      return { ...state, drawPenOnly: !state.drawPenOnly };
+    case "draw.snapShape.toggle":
+      return { ...state, drawSnapShape: !state.drawSnapShape };
+    case "draw.toolLocked.toggle":
+      return { ...state, drawToolLocked: !state.drawToolLocked };
+    case "draw.focused.toggle":
+      return { ...state, drawFocused: !state.drawFocused };
     default:
       return { ...state };
   }

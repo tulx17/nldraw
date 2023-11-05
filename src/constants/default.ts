@@ -3,6 +3,12 @@ import { createTLStore, defaultShapeUtils } from "@tldraw/tldraw";
 
 export const DEFAULT_PREFERENCES = {
   darkMode: false,
+  drawDarkMode: false,
+  drawGridBackground: true,
+  drawPenOnly: false,
+  drawSnapShape: true,
+  drawToolLocked: true,
+  drawFocused: true
 } as Preferences;
 
 export const DEFAULT_EXPLORE = {

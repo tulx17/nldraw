@@ -32,11 +32,16 @@ export function Root() {
     },
   });
 
+  // side-effect when app preferences changed
   useEffect(() => {
     if (!initialized) return;
 
-    void switchDark(preferences).catch();
-  }, [initialized, preferences]);
+    void writePreferences().catch();
+
+    void switchDark(preferences.darkMode).catch();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [preferences]);
 
   async function reloadPreferences() {
     let savedPreferencesString = await readFile({
@@ -46,22 +51,33 @@ export function Root() {
     if (!savedPreferencesString) {
       savedPreferencesString = JSON.stringify(DEFAULT_PREFERENCES);
 
-      await writeFile({
-        path: joinPath(META_DIR, PREFERENCES_FILE),
-        data: savedPreferencesString,
-      });
+      await writePreferences(DEFAULT_PREFERENCES);
     }
 
-    const savedPreferences = JSON.parse(savedPreferencesString) as Preferences;
+    let savedPreferences = JSON.parse(savedPreferencesString) as Preferences;
+
+    if (Object.keys(savedPreferences).length !== Object.keys(DEFAULT_PREFERENCES).length) {
+      savedPreferences = { ...DEFAULT_PREFERENCES, ...savedPreferences };
+
+      await writePreferences(savedPreferences);
+    }
 
     preferencesDispatch({
       type: "reload",
       payload: savedPreferences,
     });
 
-    void switchDark(savedPreferences);
+    await switchDark(savedPreferences.darkMode);
+  }
 
-    return;
+  async function writePreferences(newPreferences?: Preferences) {
+    newPreferences ??= preferences;
+    await writeFile({
+      path: joinPath(META_DIR, PREFERENCES_FILE),
+      data: JSON.stringify(newPreferences),
+    })
+
+    return newPreferences;
   }
 
   if (!initialized) return <Loading />;

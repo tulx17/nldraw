@@ -82,7 +82,8 @@ Check [Capacitor](https://capacitorjs.com) for more details.
   - [ ] Search using tags.
   - [ ] Search text inside draws.
 - [ ] ~~Update notification.~~
-- [ ] ~~IOS support (no promised).~~
+- [ ] Desktop support.
+- [ ] ~~IOS support.~~ (no promised)
 
 ## Core Libraries
 

@@ -149,8 +149,11 @@ export function toolsOverrides(_editor: Editor, schema: TLUiToolsContextType) {
   return schema;
 }
 
-export function onMount(editor: Editor) {
+export function onMount(editor: Editor, callback?: (editor: Editor) => void) {
   editor.zoomToFit();
-  editor.setCurrentTool("hand");
-  return;
+  editor.setCurrentTool("laser");
+
+  if (!callback) return;
+
+  callback(editor)
 }
